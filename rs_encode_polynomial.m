@@ -1,37 +1,38 @@
-function codewords = rs_encode_polynomial(msg_symbols, r, L)
-% rs_encode_polynomial: Evaluates message polynomials to create RS codewords
-%
-% Inputs:
-%   msg_symbols - NxK matrix of message symbols as integers (0 to 2^r-1)
-%                 Each row is a message. Col k is coefficient of x^{k-1}.
-%   r           - Bits per symbol (GF(2^r))
-%   L           - Codeword length
-%
-% Outputs:
-%   codewords   - NxL matrix of codeword symbols (GF objects)
-
-    [N, K] = size(msg_symbols);
+function c = rs_encode_polynomial(b, r, K, L)
+    % rs_encode_polynomial: Encodes a message integer into an RS codeword
+    %
+    % Inputs:
+    %   b       - Binary array representing the message
+    %   r       - GF(2^r) parameter
+    %   K       - Number of symbols
+    %   L       - Length of the codeword
+    %
+    % Output:
+    %   c       - [1 x L] Galois field array object representing the codeword
     
-    % Convert message integer matrix to GF(2^r) objects
-    M_gf = gf(msg_symbols, r);
+    % 2. Group bits into K blocks of length r
+    symbols = zeros(1, K);
+    for k = 1:K
+        idx = (k-1)*r + 1 : k*r;
+        % Convert the r-bit chunk back to decimal for the GF symbol
+        symbols(k) = bin2dec(char(b(idx) + '0'));
+    end
     
-    % primitive element of GF(2^r)
-    alpha = gf(2, r); 
+    % 3. Create polynomial coefficients in GF(2^r)
+    P = gf(symbols, r); % Size: [1 x K]
     
-    % We want to evaluate P(x) = m_0 + m_1*x + ... + m_{K-1}*x^{K-1}
-    % at x = alpha^{u-1} for u = 1...L
+    % 4. Evaluate polynomial at primitive element powers
+    % We construct a Vandermonde-like evaluation matrix X.
+    % To guarantee compatibility across MATLAB versions, we build it explicitly.
+    alpha = gf(2, r);
+    X = gf(zeros(K, L), r);
+    for k = 1:K
+        for l = 1:L
+            % P(x) = sum P_k * x^{k-1}. Here x = alpha^{l-1}
+            X(k, l) = alpha ^ ((l - 1) * (k - 1));
+        end
+    end
     
-    % To vectorize, we build a K x L exponent matrix for alpha:
-    % P_mat(k, u) = (k-1) * (u-1)
-    k_idx = 0:(K-1);
-    u_idx = 0:(L-1);
-    exponent_matrix = k_idx' * u_idx;
-    
-    % P_gf is a KxL matrix of evaluation point powers
-    P_gf = alpha .^ exponent_matrix;
-    
-    % Matrix multiplication over GF(2^r):
-    % Size: (N x K) * (K x L) = (N x L)
-    % This performs the polynomial evaluation for ALL messages simultaneously!
-    codewords = M_gf * P_gf;
+    % Codeword is vector multiplication P * X
+    c = P * X;
 end

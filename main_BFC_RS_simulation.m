@@ -1,97 +1,64 @@
-% =========================================================================
-% main_BFC_RS_simulation.m
-% 
-% Simulates Boolean Function Computation (BFC) via a noiseless binary 
-% channel using a non-systematic Reed-Solomon code.
-% =========================================================================
-
-clear; clc;
-
-% --- 1. System Parameters ---
-r = 4;              % Bits per symbol (GF(2^r))
-K = 2;              % Message length in symbols
-L = 15;             % RS codeword length
-num_trials = 5000000; % Number of Monte Carlo trials per mode
-
-% Check parameter feasibility
-m = r * K; % Total message bits
-if m > 20
-    error('Exhaustive message generation is unmanageable for m > 20.');
-end
-num_messages = 2^m;
-fprintf('System Setup: r=%d, K=%d, L=%d (GF(%d))\n', r, K, L, 2^r);
-fprintf('Total messages: %d\n\n', num_messages);
-
-% --- 2. Generate All Possible Messages ---
-% Generate numbers from 0 to 2^m-1
-msg_int = (0:num_messages-1)';
-% Convert to binary strings, then to double arrays of bits (MSB first)
-msg_bits = dec2bin(msg_int, m) - '0';
-
-% Reshape bits into field symbols
-% Each row is a message, columns 1:K are the symbols (m_0 to m_{K-1})
-msg_symbols = zeros(num_messages, K);
-for k = 1:K
-    bit_chunk = msg_bits(:, (k-1)*r + 1 : k*r);
-    % Convert the chunk back to a decimal integer representing the GF symbol
-    msg_symbols(:, k) = bin2dec(char(bit_chunk + '0'));
-end
-
-% --- 3. Encode Messages to RS Codewords ---
-fprintf('Encoding all %d messages to RS codewords... ', num_messages);
-codewords = rs_encode_polynomial(msg_symbols, r, L);
-fprintf('Done.\n\n');
 
 % --- 4. Define Boolean Function Modes to Test ---
 % A cell array containing the mode ID, mode name, and parameters
-modes_to_test = {
-    1, 'Identification (Constant weight S=1)', struct('target', randi([0 1], 1, m));
-    2, 'Exact-threshold (sum == 7)',          struct('beta', 7);
-    3, 'At-most-threshold (sum <= 1)',        struct('beta', 1);
-    4, 'Bit test (bit 3 == 1)',               struct('t', 3);
-    5, 'AND on subset (bits 1,3 == 1)',     struct('S_k', [1,2,3]);
-    6, 'Rank-based (int(b) <= 500)',          struct('r0', 5)
-};
 
-% --- 5. Run Simulations for Each Mode ---
-for i = 1:size(modes_to_test, 1)
-    mode_id = modes_to_test{i, 1};
-    mode_name = modes_to_test{i, 2};
-    params = modes_to_test{i, 3};
-    
-    fprintf('--------------------------------------------------\n');
-    fprintf('Testing Mode %d: %s\n', mode_id, mode_name);
-    
-    % Evaluate true Boolean function
-    f_val = evaluate_boolean_function(msg_bits, mode_id, params);
-    
-    % Weight of the boolean function
-    S = sum(f_val);
-    fprintf('Boolean function weight (S) = %d\n', S);
-    
-    % If S == 0, the function is always false. Region D will be empty.
-    if S == 0
-        warning('Weight is 0. No target messages.');
-    end
 
-    % Build Decoding Regions D_{j,u}
-    D = build_decoding_regions(codewords, f_val, L);
-    
-    % Run Monte Carlo Simulation
-    stats = run_monte_carlo(codewords, f_val, D, r, L, num_trials);
-    
-    % Expected theoretical FP scaling
-    expected_FP = S * (K - 1) / L;
-    
-    % Print Statistics
-    fprintf('Trials run: %d\n', num_trials);
-    fprintf('Empirical False Negative Prob: %.6f (Expected: 0)\n', stats.fn_prob);
-    fprintf('Empirical False Positive Prob: %.6f\n', stats.fp_prob);
-    fprintf('Theoretical FP Prediction S*(K-1)/L : %.6f\n', expected_FP);
-    fprintf('Overall Error Probability: %.6f\n', stats.overall_err);
-    
-    if expected_FP > 1 && stats.fp_prob < 1
-        fprintf('  *Note: Theoretical bound > 1 due to large S. Bound is loose.\n');
-    end
-    fprintf('\n');
+% =========================================================================
+% main_BFC_RS_simulation.m
+% 
+% Master script to configure, execute, and evaluate the Boolean Function 
+% Computation (BFC) using Reed-Solomon coding over a noiseless channel.
+% =========================================================================
+clear; clc; close all;
+
+% --- 1. Simulation Parameters ---
+r = 4;           % GF(2^r) field size parameter
+K = 3;           % Number of symbols in the message
+L = 15;          % RS codeword length (L <= 2^r - 1)
+num_trials = 50000; % Number of Monte Carlo trials
+
+% --- 2. Boolean Function Setup ---
+% Available options: 
+% 'id', 'exact-threshold', 'at-most-threshold', 'bit-query', 'and-subset', 'rank'
+% 'id', 'Identification (Constant weight S=1)',
+% 'exact-threshold', 'Exact-threshold (sum == beta)',          
+% 'at-most-threshold', 'At-most-threshold (sum <= beta)',        
+% 'bit-query', 'Bit test (bit t == 1)',               
+% 'and-subset', 'AND on subset (bits S_k == 1)',     
+% 'rank', 'Rank-based (int(b) <= rank)',          
+func_type = 'exact-threshold';
+params.beta = 6;       % Used for exact/at-most threshold
+params.target = randi([0 1], 1, r*K); % Used for 'id' (must be length r*K)
+params.t = 3;          % Used for 'bit-query'
+params.S_k = [1, 5, 8];% Used for 'and-subset'
+params.rank = 1000;    % Used for 'rank'
+
+fprintf('=== BFC via RS Coding Simulation ===\n');
+fprintf('Parameters: r = %d, K = %d, L = %d\n', r, K, L);
+fprintf('Boolean Function: %s\n', func_type);
+fprintf('Total Message Space: %d\n\n', 2^(r*K));
+
+% --- 3. Build Decoding Regions ---
+fprintf('Building decoding regions (exhaustive search over all messages)...\n');
+[D, S] = build_decoding_regions(r, K, L, func_type, params);
+fprintf('Hamming weight of boolean function (S): %d\n\n', S);
+
+% --- 4. Run Monte Carlo Simulation ---
+fprintf('Running Monte Carlo simulation with %d trials...\n', num_trials);
+stat = run_monte_carlo(D, r, K, L, func_type, params, num_trials);
+
+% --- 5. Theoretical Comparison ---
+% Theoretical Union Bound on False Positives: S * (K - 1) / L
+theoretical_bound_fp = (S * (K - 1)) / L;
+
+fprintf('\n=== Results ===\n');
+fprintf('Empirical False-Negative Rate: %.6f (Expected: 0.000000)\n', stat.fn_prob);
+fprintf('Empirical False-Positive Rate: %.6f\n', stat.fp_prob);
+fprintf('Empirical Overall Error Rate: %.6f\n', stat.error_prob);
+fprintf('Theoretical Upper Bound (FP):  %.6f\n', theoretical_bound_fp);
+
+if stat.fp_prob <= theoretical_bound_fp
+    fprintf('SUCCESS: Empirical FP rate is within the theoretical bound.\n');
+else
+    fprintf('WARNING: Empirical FP rate exceeded the theoretical bound!\n');
 end

@@ -1,32 +1,47 @@
-function D = build_decoding_regions(codewords, f_val, L)
-% build_decoding_regions: Builds the decoding region D_{j,u} for each position
-%
-% Inputs:
-%   codewords - NxL matrix of RS codewords (GF objects)
-%   f_val     - Nx1 logical vector indicating target messages (f(i)==1)
-%   L         - Codeword length
-%
-% Outputs:
-%   D         - 1xL Cell array. D{u} contains the unique GF symbols 
-%               produced at position u by all messages where f=1.
-
+function [D, S] = build_decoding_regions(r, K, L, func_type, params)
+    % build_decoding_regions: Determines valid GF symbols at each position
+    %
+    % Inputs:
+    %   r, K, L, func_type, params - Configuration
+    %
+    % Outputs:
+    %   D - Cell array of size [1 x L]. D{l} contains a GF array of symbols
+    %   S - Hamming weight of the boolean function
+    
+    total_messages = 2^(r * K);
+    S = 0;
+    
+    % Initialize D as empty Galois Field arrays
     D = cell(1, L);
+    for l = 1:L
+        D{l} = gf([], r);
+    end
     
-    % Filter the codewords to only those produced by target messages
-    target_codewords = codewords(f_val, :);
+    % Iterate over the entire message space
+    for msg_int = 0:(total_messages - 1)
+        
+        b_str = dec2bin(msg_int, r * K);
+        b = b_str - '0';
+        
+        % Check if message belongs to the Boolean function set
+        if evaluate_boolean_function(b, func_type, params) == 1
+            S = S + 1;
+            % Encode message to get codeword
+            c = rs_encode_polynomial(b, r, K, L);
+            
+            % Add symbols to respective decoding regions
+            for l = 1:L
+                D{l} = [D{l}; c(l)];
+            end
+        end
+    end
     
-    for u = 1:L
-        if isempty(target_codewords)
-            % If no messages satisfied f, region is empty
-            D{u} = []; 
-        else
-            % Extract the column for position u
-            column_u = target_codewords(:, u);
-            % Get the unique symbols to form the region
-            % (Convert to integers using .x to use MATLAB's unique func)
-            unique_ints = unique(column_u.x);
-            % Store as standard integers for faster lookup later
-            D{u} = unique_ints;
+    % Remove duplicates from the regions to speed up Monte Carlo
+    for l = 1:L
+        if ~isempty(D{l})
+            % Extract the integer representation (.x) to use unique() safely
+            unique_ints = unique(D{l}.x);
+            D{l} = gf(unique_ints, r);
         end
     end
 end

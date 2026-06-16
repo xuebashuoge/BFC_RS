@@ -1,68 +1,69 @@
-function stats = run_monte_carlo(codewords, f_val, D, r, L, num_trials)
-% run_monte_carlo: Simulates BFC transmission and measures error rates
-%
-% Inputs:
-%   codewords  - NxL matrix of all generated codewords (GF objects)
-%   f_val      - Nx1 logical vector of true Boolean evaluations
-%   D          - 1xL cell array representing the decoding regions
-%   r          - Bits per symbol (field size q = 2^r)
-%   L          - Codeword length
-%   num_trials - Number of random channel uses to simulate
-%
-% Outputs:
-%   stats      - Struct containing error counts and probabilities
-
-    N = size(codewords, 1);
+function stat = run_monte_carlo(D, r, K, L, func_type, params, num_trials)
+    % run_monte_carlo: Estimates Empirical FP and FN rates
+    % Inputs:
+    %   D         - 1xL Cell array of decoding regions D{u}
+    %   r         - Bits per symbol (GF(2^r))
+    %   K         - Message length in symbols
+    %   L         - Codeword length
+    %   func_type  - Integer indicating which Boolean function mode to test
+    %   params     - Struct containing parameters for the Boolean function
+    %   num_trials - Number of Monte Carlo trials to run
+    % Output:
+    %   stat - Struct containing the estimated error rates: FP, FN, and overall error rate
     
-    % 1. Draw random messages and positions
-    test_msg_idx = randi([1, N], num_trials, 1);
-    test_u = randi([1, L], num_trials, 1);
+    total_messages = 2^(r * K);
     
-    % The "true" function values for our sampled messages
-    true_f = f_val(test_msg_idx);
+    % --- 1. Precompute Lookup Tables ---
+    % We precompute actual_f and codewords for ALL possible messages to 
+    % avoid doing GF math and string conversion inside the Monte Carlo loop.
+    F_lookup = false(total_messages, 1);
+    C_lookup = zeros(total_messages, L);
     
-    % 2. Extract received symbols based on the randomized channel
-    % To avoid GF overloaded subsref indexing errors with .x, 
-    % extract the whole integer array upfront into a standard double matrix.
-    codewords_int = codewords.x; 
+    for m = 0:(total_messages-1)
+        % bitget is much faster than dec2bin for numeric bit extraction
+        b = bitget(m, (r*K):-1:1);
+        
+        F_lookup(m+1) = evaluate_boolean_function(b, func_type, params);
+        c = rs_encode_polynomial(b, r, K, L);
+        C_lookup(m+1, :) = c.x; % Store the integer values of the GF symbols
+    end
     
-    % Vectorized extraction using linear indexing (replaces the slow for-loop)
-    lin_idx_codewords = sub2ind([N, L], test_msg_idx, test_u);
-    received_symbols = codewords_int(lin_idx_codewords);
-    
-    % 3. Pre-compute a fast lookup table for the decoding regions D
-    % lookup_D(u, symbol + 1) is TRUE if symbol is in D_{u}
-    q = 2^r;
-    lookup_D = false(L, q);
-    for u = 1:L
-        if ~isempty(D{u})
-            % +1 because symbols are 0-based, MATLAB indices are 1-based
-            lookup_D(u, D{u} + 1) = true; 
+    % --- 2. Precompute Decoding Regions into a Logical Matrix ---
+    % valid_symbols(l, sym_val + 1) is true if sym_val is in D{l}
+    valid_symbols = false(L, 2^r);
+    for l = 1:L
+        if ~isempty(D{l})
+            % D{l}.x gets integer array. Add 1 because MATLAB is 1-based indexing
+            valid_symbols(l, D{l}.x + 1) = true; 
         end
     end
     
-    % 4. Apply the decision rule using fast indexing
-    linear_indices = sub2ind([L, q], test_u, received_symbols + 1);
-    decisions = lookup_D(linear_indices);
+    % --- 3. Vectorized Monte Carlo ---
+    % Generate all random messages and transmission indices at once
+    msg_indices = randi([1, total_messages], num_trials, 1);
+    U = randi([1, L], num_trials, 1);
     
-    % 5. Tally the statistics
-    num_fn = sum((true_f == 1) & (decisions == 0));
-    num_fp = sum((true_f == 0) & (decisions == 1));
-    total_true_pos = sum(true_f == 1);
-    total_true_neg = sum(true_f == 0);
+    % Lookup actual Boolean outputs
+    actual_f = F_lookup(msg_indices);
     
-    % Calculate probabilities (protect against div by 0)
-    if total_true_pos > 0
-        stats.fn_prob = num_fn / total_true_pos;
-    else
-        stats.fn_prob = 0; % N/A
-    end
+    % Lookup transmitted symbols using linear indexing
+    lin_idx_C = sub2ind([total_messages, L], msg_indices, U);
+    received_symbols = C_lookup(lin_idx_C);
     
-    if total_true_neg > 0
-        stats.fp_prob = num_fp / total_true_neg;
-    else
-        stats.fp_prob = 0; % N/A
-    end
+    % Check if received symbols are valid (Receiver Decodes)
+    lin_idx_D = sub2ind([L, 2^r], U, received_symbols + 1);
+    decoded_f = valid_symbols(lin_idx_D);
     
-    stats.overall_err = (num_fn + num_fp) / num_trials;
+    % --- 4. Tally Metrics ---
+    % False Positive: actual is 0, but decoded is 1
+    fp_count = sum(~actual_f & decoded_f);
+    
+    % False Negative: actual is 1, but decoded is 0
+    fn_count = sum(actual_f & ~decoded_f);
+    
+    % Calculate conditional probabilities
+    fp_prob = fp_count / num_trials;
+    fn_prob = fn_count / num_trials;
+    error_prob = (fp_count + fn_count) / num_trials;
+    stat = struct('fp_prob', fp_prob, 'fn_prob', fn_prob, 'error_prob', error_prob);
 end
