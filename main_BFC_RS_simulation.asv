@@ -46,10 +46,10 @@ fprintf('Done.\n\n');
 % A cell array containing the mode ID, mode name, and parameters
 modes_to_test = {
     1, 'Identification (Constant weight S=1)', struct('target', randi([0 1], 1, m));
-    2, 'Exact-threshold (sum == 7)',          struct('beta', 7);
+    2, 'Exact-threshold (sum == 6)',          struct('beta', 7);
     3, 'At-most-threshold (sum <= 1)',        struct('beta', 1);
     4, 'Bit test (bit 3 == 1)',               struct('t', 3);
-    5, 'AND on subset (bits 1,3 == 1)',     struct('S_k', [1,2,3]);
+    5, 'AND on subset (bits 1,3 == 1)',     struct('S_k', [3]);
     6, 'Rank-based (int(b) <= 500)',          struct('r0', 5)
 };
 

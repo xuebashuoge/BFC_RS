@@ -23,7 +23,7 @@ fprintf('Fixed Parameter: K = %d, r = %d, m = %d\n\n', K, r, m);
 
 % --- 2. Setup Analytical vs Empirical Ranges ---
 % L_values for the empirical simulation (restricted due to memory)
-L_values = 2.^(2:6); 
+L_values = 2.^(2:4); 
 n_empirical = log2(L_values) + r;
 empirical_err = zeros(length(L_values), 1);
 
@@ -79,7 +79,7 @@ for idx = 1:length(L_values)
     stats = run_monte_carlo(codewords, f_val, D, r, L, num_trials);
     
     % Store the empirical result (Update "error_rate" if your struct uses a different field name)
-    empirical_err(idx) = stats.error_rate; 
+    empirical_err(idx) = stats.overall_err; 
 end
 
 fprintf('\nSimulation complete! Generating plot...\n');

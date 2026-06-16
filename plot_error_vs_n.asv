@@ -10,23 +10,23 @@ clear; clc;
 
 % --- 1. Sweep Parameters ---
 % We will keep K fixed and sweep r. We set L to its maximum 2^r - 1.
-K = 2; 
-L_values = 2:10;
-r = 5;
+K = 4; 
+r = 8;
 m = r * K;
+L_values = 2.^(2:7);
 num_messages = 2^m;
 num_trials = 100000; % High trials needed for small error rates
 
 % Pre-allocate arrays for plotting
-n_vals = zeros(length(L_values), 1);
-empirical_err = zeros(length(L_values), 1);
-theoretical_err = zeros(length(L_values), 1);
-traditional_err = zeros(length(L_values), 1); % NEW: Traditional curve
+n_vals = zeros(8, 1);
+empirical_err = zeros(8, 1);
+theoretical_err = zeros(8, 1);
+traditional_err = zeros(8, 1); % NEW: Traditional curve
 
 fprintf('Starting Sweep for Error vs n Plot...\n');
 fprintf('Fixed Parameter: K = %d\n\n', K);
 
-for idx = 1:length(L_values)
+for idx = 1:length(L=n_values)
     L = L_values(idx);
     
     % Calculate n (transmission length in bits)
@@ -91,8 +91,8 @@ ylabel('Log Error Probability ($P_e$)', 'Interpreter', 'latex', 'FontSize', 12);
 title('Error Probability vs Transmission Length (Fixed K=2)', 'FontSize', 14);
 
 % Add a vertical line to show where n = m for the final point (r=8, m=16)
-xline(r, 'k:', 'n = m (Full Message Length)', 'LabelVerticalAlignment', 'bottom', 'HandleVisibility', 'off');
-
+xline(m, 'k:', 'n = m (Full Message Length)', 'LabelVerticalAlignment', 'bottom', 'HandleVisibility', 'off');
+xlim([log2(L_values(1))+r, m+1]);
 legend('Empirical RS Error (Monte Carlo)', 'Theoretical RS FP Bound $\frac{S(K-1)}{L}$', 'Traditional (Sending $n$ raw bits)', 'Interpreter', 'latex', 'Location', 'southwest', 'FontSize', 11);
 
 % Improve visuals
