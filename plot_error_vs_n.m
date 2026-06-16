@@ -23,7 +23,7 @@ fprintf('Fixed Parameter: K = %d, r = %d, m = %d\n\n', K, r, m);
 
 % --- 2. Setup Analytical vs Empirical Ranges ---
 % L_values for the empirical simulation (restricted due to memory)
-L_values = 2.^(2:4); 
+L_values = 2.^(2:8); 
 n_empirical = log2(L_values) + r;
 empirical_err = zeros(length(L_values), 1);
 
