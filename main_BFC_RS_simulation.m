@@ -9,7 +9,7 @@
 % Master script to configure, execute, and evaluate the Boolean Function 
 % Computation (BFC) using Reed-Solomon coding over a noiseless channel.
 % =========================================================================
-clear; clc; close all;
+
 tic
 % --- 1. Simulation Parameters ---
 r = 4;           % GF(2^r) field size parameter
