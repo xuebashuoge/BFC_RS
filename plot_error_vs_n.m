@@ -9,31 +9,53 @@
 clear; clc;
 
 % --- 1. Sweep Parameters ---
-% We will keep K fixed and sweep r. We set L to its maximum 2^r - 1.
-K = 4; 
-r = 8;
+K = 3; 
+r = 6;
 m = r * K;
-L_values = 2.^(2:8);
 num_messages = 2^m;
 num_trials = 100000; % High trials needed for small error rates
 
-% Pre-allocate arrays for plotting
-n_vals = zeros(length(L_values), 1);
-empirical_err = zeros(length(L_values), 1);
-theoretical_err = zeros(length(L_values), 1);
-traditional_err = zeros(length(L_values), 1); % NEW: Traditional curve
+% Target pattern size (assumed 1 for the all-zero target pattern)
+S = 1; 
 
 fprintf('Starting Sweep for Error vs n Plot...\n');
-fprintf('Fixed Parameter: K = %d\n\n', K);
+fprintf('Fixed Parameter: K = %d, r = %d, m = %d\n\n', K, r, m);
 
+% --- 2. Setup Analytical vs Empirical Ranges ---
+% L_values for the empirical simulation (restricted due to memory)
+L_values = 2.^(2:6); 
+n_empirical = log2(L_values) + r;
+empirical_err = zeros(length(L_values), 1);
+
+% n values for analytical curves (can go all the way up to m)
+n_analytical = min(n_empirical) : m;
+theoretical_err = zeros(length(n_analytical), 1);
+traditional_err = zeros(length(n_analytical), 1);
+
+% --- 3. Compute Analytical Errors ---
+fprintf('Calculating Theoretical and Traditional bounds up to n = %d...\n', m);
+for i = 1:length(n_analytical)
+    n_val = n_analytical(i);
+    
+    % Traditional Transmission Error
+    % Unknown bits = m - floor(n)
+    unknown_bits = m - floor(n_val);
+    traditional_fp = (2^unknown_bits - 1) / (2^m - 1);
+    traditional_err(i) = traditional_fp;
+    
+    % Theoretical RS FP Bound
+    % Since n = log2(L) + r => L_eff = 2^(n - r)
+    L_eff = 2^(n_val - r);
+    theoretical_err(i) = (S * (K - 1)) / L_eff;
+end
+
+% --- 4. Run Empirical Simulation ---
+fprintf('\nRunning Monte Carlo simulation for constrained L values...\n');
 for idx = 1:length(L_values)
     L = L_values(idx);
+    n = n_empirical(idx);
     
-    % Calculate n (transmission length in bits)
-    n = log2(L) + r;
-    n_vals(idx) = n;
-    
-    fprintf('Testing r=%d, L=%d -> n=%.2f bits, m=%d bits (Total messages: %d)...\n', r, L, n, m, num_messages);
+    fprintf('Testing r=%d, L=%d -> n=%.2f bits, (Total messages: %d)...\n', r, L, n, num_messages);
     
     % --- Generate Messages ---
     msg_int = (0:num_messages-1)';
@@ -49,55 +71,47 @@ for idx = 1:length(L_values)
     codewords = rs_encode_polynomial(msg_symbols, r, L);
     
     % --- Boolean Function (Mode 1: Identification) ---
-    % We use an all-zero target pattern for simplicity. S = 1.
     params.target = zeros(1, m);
     f_val = evaluate_boolean_function(msg_bits, 1, params);
-    S = sum(f_val);
     
     % --- Build Regions & Simulate ---
     D = build_decoding_regions(codewords, f_val, L);
     stats = run_monte_carlo(codewords, f_val, D, r, L, num_trials);
     
-    % --- Store Results ---
-    empirical_err(idx) = stats.overall_err;
-    theoretical_err(idx) = S * (K - 1) / L;
-    
-    % --- Calculate Traditional Transmission Error ---
-    % If we can only send floor(n) bits, and the receiver checks if those
-    % bits match the target. The remaining (m - floor(n)) bits are unknown.
-    % The FP rate is the number of non-target messages that share those 
-    % n bits, divided by the total number of non-target messages.
-    unknown_bits = max(0, m - floor(n));
-    traditional_fp = (2^unknown_bits - 1) / (2^m - 1);
-    traditional_err(idx) = traditional_fp;
+    % Store the empirical result (Update "error_rate" if your struct uses a different field name)
+    empirical_err(idx) = stats.error_rate; 
 end
 
 fprintf('\nSimulation complete! Generating plot...\n');
 
-% --- 2. Plotting ---
+% --- 5. Plotting ---
 figure('Name', 'BFC Error Probability vs n', 'Color', 'w');
 
-% Plot empirical, theoretical, and traditional using log scale for Y-axis
-% We use max(err, 1e-10) to avoid log(0) errors on the plot if error is exactly 0
-semilogy(n_vals, max(empirical_err, 1e-10), '-bo', 'LineWidth', 2, 'MarkerSize', 8);
+% Plot empirical using n_empirical, and theoretical/traditional using n_analytical
+semilogy(n_empirical, max(empirical_err, 1e-10), '-bo', 'LineWidth', 2, 'MarkerSize', 8);
 hold on;
-semilogy(n_vals, max(theoretical_err, 1e-10), '--r^', 'LineWidth', 2, 'MarkerSize', 8);
-semilogy(n_vals, max(traditional_err, 1e-10), '-.gs', 'LineWidth', 2, 'MarkerSize', 8);
+semilogy(n_analytical, max(theoretical_err, 1e-10), '--r^', 'LineWidth', 2, 'MarkerSize', 8);
+semilogy(n_analytical, max(traditional_err, 1e-10), '-.gs', 'LineWidth', 2, 'MarkerSize', 8);
 grid on;
 
 % Formatting the plot
 xlabel('Transmission Length $n = \log_2(L) + r$ (bits)', 'Interpreter', 'latex', 'FontSize', 12);
 ylabel('Log Error Probability ($P_e$)', 'Interpreter', 'latex', 'FontSize', 12);
-title('Error Probability vs Transmission Length (Fixed K=2)', 'FontSize', 14);
+title(sprintf('Error Probability vs Transmission Length (Fixed K=%d)', K), 'FontSize', 14);
 
-% Add a vertical line to show where n = m for the final point (r=8, m=16)
+% Add a vertical line to show where n = m 
 xline(m, 'k:', 'n = m (Full Message Length)', 'LabelVerticalAlignment', 'bottom', 'HandleVisibility', 'off');
-xlim([log2(L_values(1))+r, m+1]);
-legend('Empirical RS Error (Monte Carlo)', 'Theoretical RS FP Bound $\frac{S(K-1)}{L}$', 'Traditional (Sending $n$ raw bits)', 'Interpreter', 'latex', 'Location', 'southwest', 'FontSize', 11);
+xlim([min(n_empirical), m+1]);
+
+legend('Empirical RS Error (Monte Carlo)', ...
+       'Theoretical RS FP Bound $\frac{S(K-1)}{L}$', ...
+       'Traditional (Sending $n$ raw bits)', ...
+       'Interpreter', 'latex', 'Location', 'southwest', 'FontSize', 11);
 
 % Improve visuals
 set(gca, 'FontSize', 11, 'GridAlpha', 0.3, 'MinorGridAlpha', 0.1);
 % Set lower Y-limit so exact 0 doesn't crush the graph
 ylim([1e-6, 1]); 
 hold off;
+
 saveas(gcf, 'error_vs_n_plot.png');
