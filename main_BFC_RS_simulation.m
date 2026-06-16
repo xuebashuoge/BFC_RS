@@ -10,12 +10,12 @@
 % Computation (BFC) using Reed-Solomon coding over a noiseless channel.
 % =========================================================================
 clear; clc; close all;
-
+tic
 % --- 1. Simulation Parameters ---
 r = 4;           % GF(2^r) field size parameter
 K = 3;           % Number of symbols in the message
 L = 15;          % RS codeword length (L <= 2^r - 1)
-num_trials = 50000; % Number of Monte Carlo trials
+num_trials = 100000; % Number of Monte Carlo trials
 
 % --- 2. Boolean Function Setup ---
 % Available options: 
@@ -62,3 +62,5 @@ if stat.fp_prob <= theoretical_bound_fp
 else
     fprintf('WARNING: Empirical FP rate exceeded the theoretical bound!\n');
 end
+
+toc
