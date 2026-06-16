@@ -20,8 +20,8 @@ function [D, S] = build_decoding_regions(r, K, L, func_type, params)
     % Iterate over the entire message space
     for msg_int = 0:(total_messages - 1)
         
-        b_str = dec2bin(msg_int, r * K);
-        b = b_str - '0';
+        % OPTIMIZATION: Use numeric bitget instead of slow dec2bin strings
+        b = bitget(msg_int, (r*K):-1:1);
         
         % Check if message belongs to the Boolean function set
         if evaluate_boolean_function(b, func_type, params) == 1
