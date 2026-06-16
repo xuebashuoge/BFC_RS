@@ -120,6 +120,7 @@ ymin = max(1e-7, min(fp_sim(fp_sim > 0)) / 10);
 if isempty(ymin); ymin = 1e-7; end
 ylim([ymin, 1]);
 xlim([min(n_theory), max(n_theory)]);
+savefig(gcf, sprintf('BFC_Error_Rates_%s_r%d_K%d.png', func_type, r, K));
 
 fprintf('\nPlot generation complete!\n');
 toc

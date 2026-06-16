@@ -93,6 +93,7 @@ xlim([r, m]);
 
 % Enforce limits to make the plot visually clean
 ylim([max(1e-6, min(sim_fp_probs(sim_fp_probs>0)) * 0.1), 10]);
+savefig(gcf, sprintf('BFC_Error_Rates_%s_r%d_K%d_vec.png', func_type, r, K));
 
 fprintf('\n=== Simulation Complete ===\nPlot has been generated.\n');
 toc
