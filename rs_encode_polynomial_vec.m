@@ -31,7 +31,8 @@ function c = rs_encode_polynomial_vec(b, r, K, L)
     X = gf(zeros(K, L), r);
     for k = 1:K
         for l = 1:L
-            X(k, l) = alpha ^ ((l - 1) * (k - 1));
+            % change to start from alpha^1 instead of alpha^0
+            X(k, l) = alpha ^ (l * (k - 1));
         end
     end
     
