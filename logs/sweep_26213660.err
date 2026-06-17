@@ -1,0 +1,13 @@
+{Error using evaluate_boolean_function (line 44)
+Unknown boolean function type.
+
+Error in build_decoding_regions (line 27)
+        if evaluate_boolean_function(b, func_type, params) == 1
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+} 
+{Error using ylim (line 37)
+Limits must be a 2-element vector of increasing numeric values.
+} 
+{Error using savefig (line 19)
+Argument must be a .fig file
+} 

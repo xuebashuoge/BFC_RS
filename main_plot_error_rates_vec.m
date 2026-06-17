@@ -19,7 +19,7 @@ num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
 L_list_sim = [4, 8, 16, 32, 64, 128, 256, 512, 1023]; 
 
 % --- 2. Boolean Function Setup ---
-func_type = 'exact-threshold';
+func_type = 'target-threshold';
 params.beta = 2;                      % Target threshold
 params.target = randi([0 1], 1, m);   % Fallback for 'id'
 params.t = 3;                         % Fallback for 'bit-query'

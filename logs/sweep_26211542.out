@@ -1,5 +1,5 @@
 MATLAB is selecting SOFTWARE rendering.
-Opening log file:  /home/yangshuo/java.log.24742
+Opening log file:  /home/yangshuo/java.log.7730
 
                             < M A T L A B (R) >
                   Copyright 1984-2024 The MathWorks, Inc.
@@ -15,28 +15,25 @@ For product information, visit www.mathworks.com.
 >> Total Message Space: 1048576
 >> >> >> >> >> >> >> >> >> >> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 Simulating L = 4 (n = 12.00)...
-Hamming weight of boolean function (S): 190
-Empirical FP Rate: 0.060308
+Hamming weight of boolean function (S): 1
+Empirical FP Rate: 0.000968
 
 Simulating L = 8 (n = 13.00)...
-Empirical FP Rate: 0.082308
+Empirical FP Rate: 0.000981
 
 Simulating L = 16 (n = 14.00)...
-Empirical FP Rate: 0.117883
+Empirical FP Rate: 0.001001
 
 Simulating L = 32 (n = 15.00)...
-Empirical FP Rate: 0.143185
+Empirical FP Rate: 0.000972
 
 Simulating L = 64 (n = 16.00)...
-Empirical FP Rate: 0.157850
+Empirical FP Rate: 0.000908
 
 Simulating L = 128 (n = 17.00)...
-Empirical FP Rate: 0.166625
+Empirical FP Rate: 0.000911
 
 Simulating L = 256 (n = 18.00)...
-Empirical FP Rate: 0.169575
+Empirical FP Rate: 0.000986
 
 Simulating L = 512 (n = 19.00)...
-Empirical FP Rate: 0.173281
-
-Simulating L = 1023 (n = 20.00)...
