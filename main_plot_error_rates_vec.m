@@ -18,6 +18,14 @@ num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
 % Specific L values to simulate (up to the RS max limit of 2^r - 1)
 L_list_sim = [4, 8, 16, 32, 64, 128, 256, 512, 1023]; 
 
+
+% 'id (Constant weight S=1)' 
+% 'exact-threshold (sum == beta)'         
+% 'at-most-threshold (sum <= beta)'       
+% 'bit-query (bit t == 1)'              
+% 'and-subset (bits in S_k == 1)'    
+% 'rank (int(b) <= rank)'         
+
 % --- 2. Boolean Function Setup ---
 func_type = 'target-threshold';
 params.beta = 2;                      % Target threshold

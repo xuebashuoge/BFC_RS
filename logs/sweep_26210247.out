@@ -40,3 +40,12 @@ Simulating L = 512 (n = 19.00)...
 Empirical FP Rate: 0.173281
 
 Simulating L = 1023 (n = 20.00)...
+Empirical FP Rate: 0.172011
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> [Warning: MATLAB has disabled some advanced graphics rendering features by
+switching to software OpenGL. For more information, click <a
+href="matlab:opengl('problems')">here</a>.] 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> 
+=== Simulation Complete ===
+Plot has been generated.
+>> Elapsed time is 8439.909569 seconds.
+>> 
