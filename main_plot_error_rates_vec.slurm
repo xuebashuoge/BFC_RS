@@ -11,12 +11,12 @@
 #SBATCH --output=logs/sweep_%j.out
 #SBATCH --error=logs/sweep_%j.err
 
-#SBATCH --cpus-per-task=4
-#SBATCH --time=01:00:00
-#SBATCH --mem=1024G
+#SBATCH --cpus-per-task=16
+#SBATCH --time=012:00:00
+#SBATCH --mem=64G
 
 module load MATLAB/2024b_Update_3
 
 export SCRATCH="/tmp/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
 mkdir -p $SCRATCH
-matlab -nodesktop -nosplash < plot_error_vs_n.m
+matlab -nodesktop -nosplash < main_plot_error_rates_vec.m

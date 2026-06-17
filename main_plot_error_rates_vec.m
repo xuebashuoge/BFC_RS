@@ -13,10 +13,10 @@ tic
 r = 10;           % GF(2^r) field size
 K = 2;           % Number of symbols
 m = r * K;       % Total message length in bits 
-num_trials = 100000; % High trials since our vectorized Monte Carlo is fast
+num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
 
 % Specific L values to simulate (up to the RS max limit of 2^r - 1)
-L_list_sim = [4, 8];%, 16, 32, 64, 128, 256, 512]; 
+L_list_sim = [4, 8, 16, 32, 64, 128, 256, 512, 1023]; 
 
 % --- 2. Boolean Function Setup ---
 func_type = 'exact-threshold';

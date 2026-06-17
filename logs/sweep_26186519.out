@@ -1,0 +1,39 @@
+MATLAB is selecting SOFTWARE rendering.
+Opening log file:  /home/yangshuo/java.log.23376
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2024 The MathWorks, Inc.
+             R2024b Update 3 (24.2.0.2806996) 64-bit (glnxa64)
+                             November 26, 2024
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> === BFC Plotting Simulation ===
+>> Message Length: m = 20 bits (r=10, K=2)
+>> Total Message Space: 1048576
+>> >> >> >> >> >> >> >> >> >> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Simulating L = 4 (n = 12.00)...
+Hamming weight of boolean function (S): 190
+Empirical FP Rate: 0.060308
+
+Simulating L = 8 (n = 13.00)...
+Empirical FP Rate: 0.082308
+
+Simulating L = 16 (n = 14.00)...
+Empirical FP Rate: 0.117883
+
+Simulating L = 32 (n = 15.00)...
+Empirical FP Rate: 0.143185
+
+Simulating L = 64 (n = 16.00)...
+Empirical FP Rate: 0.157850
+
+Simulating L = 128 (n = 17.00)...
+Empirical FP Rate: 0.166625
+
+Simulating L = 256 (n = 18.00)...
+Empirical FP Rate: 0.169575
+
+Simulating L = 512 (n = 19.00)...
