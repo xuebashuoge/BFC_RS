@@ -16,7 +16,7 @@ m = r * K;       % Total message length in bits
 num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
 
 % Specific L values to simulate (up to the RS max limit of 2^r - 1)
-L_list_sim = [4, 8, 16, 32, 64, 128, 256, 512, 1023]; 
+L_list_sim = [4,8,16,32,64,128,256,512,1023]; 
 
 
 % 'id (Constant weight S=1)' 
@@ -27,7 +27,7 @@ L_list_sim = [4, 8, 16, 32, 64, 128, 256, 512, 1023];
 % 'rank (int(b) <= rank)'         
 
 % --- 2. Boolean Function Setup ---
-func_type = 'target-threshold';
+func_type = 'exact-threshold';
 params.beta = 2;                      % Target threshold
 params.target = randi([0 1], 1, m);   % Fallback for 'id'
 params.t = 3;                         % Fallback for 'bit-query'
@@ -53,7 +53,7 @@ for i = 1:length(L_list_sim)
     fprintf('\nSimulating L = %d (n = %.2f)...\n', L, sim_n_vals(i));
     
     % Build decoding regions for this specific L
-    [D, S_curr] = build_decoding_regions(r, K, L, func_type, params);
+    [D, S_curr] = build_decoding_regions_vec(r, K, L, func_type, params);
     
     if i == 1
         S_weight = S_curr; % Save the Hamming weight for theoretical math
