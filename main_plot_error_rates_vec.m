@@ -27,7 +27,7 @@ L_list_sim = [4, 8, 16, 32, 64, 128, 256, 512, 1023];
 % 'rank (int(b) <= rank)'         
 
 % --- 2. Boolean Function Setup ---
-func_type = 'target-threshold';
+func_type = 'exact-threshold';
 params.beta = 2;                      % Target threshold
 params.target = randi([0 1], 1, m);   % Fallback for 'id'
 params.t = 3;                         % Fallback for 'bit-query'
@@ -40,7 +40,7 @@ fprintf('Total Message Space: %d\n', 2^m);
 
 % --- 3. Run Empirical Simulations ---
 sim_n_vals = zeros(1, length(L_list_sim));
-sim_fp_probs = zeros(1, length(L_list_sim));
+sim_error_prob = zeros(1, length(L_list_sim));
 
 % We need the Hamming weight 'S' for the theoretical bound.
 % It will be the same for all L, so we will extract it on the first loop.
@@ -62,9 +62,9 @@ for i = 1:length(L_list_sim)
     
     % Run Monte Carlo
     stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
-    sim_fp_probs(i) = stat.fp_prob;
+    sim_error_prob(i) = stat.error_prob;
     
-    fprintf('Empirical FP Rate: %.6f\n', sim_fp_probs(i));
+    fprintf('Empirical Error Probability: %.6f\n', sim_error_prob(i));
 end
 
 % --- 4. Compute Theoretical Bounds (Separated Calculation) ---
@@ -85,7 +85,7 @@ theory_shannon(theory_shannon < 0) = 0;
 figure('Name', 'BFC Error Probability', 'Color', 'w', 'Position', [100, 100, 800, 600]);
 
 % Using semilogy for log scale on the Y-axis
-semilogy(sim_n_vals, sim_fp_probs, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Simulated Empirical FP');
+semilogy(sim_n_vals, sim_error_prob, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Simulated Empirical FP');
 hold on;
 semilogy(n_theory, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
 semilogy(n_theory, theory_shannon, 'k-.', 'LineWidth', 2, 'DisplayName', 'Shannon Framework: 1 - 2^{n-m}');
@@ -100,7 +100,7 @@ legend('Location', 'southwest', 'FontSize', 11);
 xlim([r, m]);
 
 % Enforce limits to make the plot visually clean
-ylim([max(1e-6, min(sim_fp_probs(sim_fp_probs>0)) * 0.1), 10]);
+ylim([max(1e-6, min(sim_error_prob(sim_error_prob>0)) * 0.1), 10]);
 savefig(gcf, sprintf('BFC_Error_Rates_%s_r%d_K%d_vec.png', func_type, r, K));
 
 fprintf('\n=== Simulation Complete ===\nPlot has been generated.\n');

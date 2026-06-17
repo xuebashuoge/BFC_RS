@@ -1,5 +1,5 @@
 MATLAB is selecting SOFTWARE rendering.
-Opening log file:  /home/yangshuo/java.log.7730
+Opening log file:  /home/yangshuo/java.log.39291
 
                             < M A T L A B (R) >
                   Copyright 1984-2024 The MathWorks, Inc.
@@ -10,43 +10,42 @@ Opening log file:  /home/yangshuo/java.log.7730
 To get started, type doc.
 For product information, visit www.mathworks.com.
  
->> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> === BFC Plotting Simulation ===
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> === BFC Plotting Simulation ===
 >> Message Length: m = 20 bits (r=10, K=2)
 >> Total Message Space: 1048576
 >> >> >> >> >> >> >> >> >> >> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 Simulating L = 4 (n = 12.00)...
-Hamming weight of boolean function (S): 1
-Empirical FP Rate: 0.000968
+Hamming weight of boolean function (S): 190
+Empirical Error Probability: 0.060393
 
 Simulating L = 8 (n = 13.00)...
-Empirical FP Rate: 0.000981
+Empirical Error Probability: 0.082162
 
 Simulating L = 16 (n = 14.00)...
-Empirical FP Rate: 0.001001
+Empirical Error Probability: 0.117168
 
 Simulating L = 32 (n = 15.00)...
-Empirical FP Rate: 0.000972
+Empirical Error Probability: 0.142409
 
 Simulating L = 64 (n = 16.00)...
-Empirical FP Rate: 0.000908
+Empirical Error Probability: 0.158490
 
 Simulating L = 128 (n = 17.00)...
-Empirical FP Rate: 0.000911
+Empirical Error Probability: 0.166325
 
 Simulating L = 256 (n = 18.00)...
-Empirical FP Rate: 0.000986
+Empirical Error Probability: 0.169389
 
 Simulating L = 512 (n = 19.00)...
-Empirical FP Rate: 0.000985
+Empirical Error Probability: 0.172357
 
 Simulating L = 1023 (n = 20.00)...
-Empirical FP Rate: 0.000939
->> >> >> >> >> >> >> >> Empirical Error Probability: 0.000929
->> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> [Warning: MATLAB has disabled some advanced graphics rendering features by
+Empirical Error Probability: 0.171768
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> [Warning: MATLAB has disabled some advanced graphics rendering features by
 switching to software OpenGL. For more information, click <a
 href="matlab:opengl('problems')">here</a>.] 
 >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> 
 === Simulation Complete ===
 Plot has been generated.
->> Elapsed time is 19460.043711 seconds.
+>> Elapsed time is 12643.965761 seconds.
 >> 
