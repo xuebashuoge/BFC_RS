@@ -13,7 +13,7 @@ tic
 r = 10;           % GF(2^r) field size
 K = 2;           % Number of symbols
 m = r * K;       % Total message length in bits 
-num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
+num_trials = 10; % High trials since our vectorized Monte Carlo is fast
 
 % Specific L values to simulate (up to the RS max limit of 2^r - 1)
 L_list_sim = [4,8,16,32,64,128,256,512,1023]; 
@@ -101,7 +101,7 @@ xlim([r, m]);
 
 % Enforce limits to make the plot visually clean
 ylim([max(1e-6, min(sim_fp_probs(sim_fp_probs>0)) * 0.1), 10]);
-savefig(gcf, sprintf('BFC_Error_Rates_%s_r%d_K%d_vec.png', func_type, r, K));
+saveas(gcf, sprintf('BFC_Error_Rates_%s_r%d_K%d_vec.png', func_type, r, K));
 
 fprintf('\n=== Simulation Complete ===\nPlot has been generated.\n');
 toc
