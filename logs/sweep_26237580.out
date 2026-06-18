@@ -34,3 +34,18 @@ Simulating L = 128 (n = 17.00)...
 Empirical Error Probability: 0.167005
 
 Simulating L = 256 (n = 18.00)...
+Empirical Error Probability: 0.170181
+
+Simulating L = 512 (n = 19.00)...
+Empirical Error Probability: 0.172662
+
+Simulating L = 1023 (n = 20.00)...
+Empirical Error Probability: 0.171899
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> [Warning: MATLAB has disabled some advanced graphics rendering features by
+switching to software OpenGL. For more information, click <a
+href="matlab:opengl('problems')">here</a>.] 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> 
+=== Simulation Complete ===
+Plot has been generated.
+>> Elapsed time is 11754.302700 seconds.
+>> 

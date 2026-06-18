@@ -1,5 +1,5 @@
 MATLAB is selecting SOFTWARE rendering.
-Opening log file:  /home/yangshuo/java.log.34350
+Opening log file:  /home/yangshuo/java.log.3582
 
                             < M A T L A B (R) >
                   Copyright 1984-2024 The MathWorks, Inc.
@@ -76,6 +76,12 @@ Message Length: m = 28 bits (r=14, K=2), Codeword Length: 3
 Total Message Space: 268435456
 
 Simulating r = 14 (n = 15.58)...
-Jun 18 10:07:23 spartan-bm022 kernel: Memory cgroup stats for /system.slice/slurmstepd.scope/job_26238169:
-Jun 18 10:07:23 spartan-bm022 kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=task_0,mems_allowed=0-3,oom_memcg=/system.slice/slurmstepd.scope/job_26238169,task_memcg=/system.slice/slurmstepd.scope/job_26238169/step_batch/user/task_0,task=MATLAB,pid=34350,uid=18349
-Jun 18 10:07:23 spartan-bm022 kernel: Memory cgroup out of memory: Killed process 34350 (MATLAB) total-vm:70871404kB, anon-rss:16602248kB, file-rss:21888kB, shmem-rss:0kB, UID:18349 pgtables:34624kB oom_score_adj:0
+Empirical Error Probability: 0.007489
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> [Warning: MATLAB has disabled some advanced graphics rendering features by
+switching to software OpenGL. For more information, click <a
+href="matlab:opengl('problems')">here</a>.] 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> 
+=== Simulation Complete ===
+Plot has been generated.
+>> Elapsed time is 563.993131 seconds.
+>> 

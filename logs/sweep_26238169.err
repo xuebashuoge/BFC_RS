@@ -1,0 +1,4 @@
+{Unrecognized function or variable 'm'.
+} 
+/var/spool/slurm/job26238169/slurm_script: line 22: 34350 Killed                  matlab -nodesktop -nosplash < main_plot_error_rates_r_vec.m
+[2026-06-18T10:07:25.263] error: Detected 1 oom_kill event in StepId=26238169.batch. Some of the step tasks have been OOM Killed.

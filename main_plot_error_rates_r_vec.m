@@ -12,7 +12,7 @@ tic
 % We MUST choose K=2 so that max(n) = log2(2^r - 1) + r ~ 2r = m
 L = 3;
 K = 2;           % Number of symbols
-r_list_sim = 2:14;  % start from at least L <= 2^r - 1
+r_list_sim = 2:17;  % start from at least L <= 2^r - 1
 num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
 
 
@@ -37,11 +37,10 @@ fprintf('=== BFC Plotting Simulation ===\n');
 % --- 3. Run Empirical Simulations ---
 sim_n_vals = zeros(1, length(r_list_sim));
 sim_error_prob = zeros(1, length(r_list_sim));
+sim_S_weights = zeros(1, length(r_list_sim)); % Store S for each r (should be the same)
 
 % We need the Hamming weight 'S' for the theoretical bound.
 % It will be the same for all L, so we will extract it on the first loop.
-S_weight = 0; 
-
 for i = 1:length(r_list_sim)
     r = r_list_sim(i);
     m = r * K;       % Total message length in bits 
@@ -54,11 +53,9 @@ for i = 1:length(r_list_sim)
     % Build decoding regions for this specific L
     [D, S_curr] = build_decoding_regions_vec(r, K, L, func_type, params);
     
-    if i == 1
-        S_weight = S_curr; % Save the Hamming weight for theoretical math
-        fprintf('Hamming weight of boolean function (S): %d\n', S_weight);
-    end
-    
+    sim_S_weights(i) = S_curr;
+    fprintf('Hamming weight of boolean function (S): %d\n', S_curr);
+
     % Run Monte Carlo
     stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
     sim_error_prob(i) = stat.error_prob;
@@ -69,11 +66,12 @@ end
 % --- 4. Compute Theoretical Bounds (Separated Calculation) ---
 % We calculate these smoothly over a continuous range of n
 n_theory = linspace(sim_n_vals(1), sim_n_vals(end), 500);
-
+m_theory = (n_theory - log2(L)) .* K;
 % 4a. Upper Bound: S * (K - 1) / L
 % Back-calculate continuous L from n: L = 2^(n - r)
-L_theory = 2.^(n_theory - r);
-theory_upper_bound = (S_weight * (K - 1)) ./ L_theory;
+theory_upper_bound = (sim_S_weights(1) * (K - 1)) ./ L;
+
+shannon_bound = 1 - 2.^(n_theory - m_theory);
 
 
 % --- 5. Plotting ---
@@ -95,7 +93,7 @@ legend('Location', 'southwest', 'FontSize', 11);
 xlim([floor(sim_n_vals(1)), ceil(sim_n_vals(end))]);
 
 % Enforce limits to make the plot visually clean
-ylim([max(1e-6, min(sim_error_prob(sim_error_prob>0)) * 0.1), 10]);
+ylim([max(1e-6, min(sim_error_prob(sim_error_prob>0)) * 0.1), 1]);
 saveas(gcf, sprintf('BFC_Error_Rates_%s_L%d_K%d_vec.png', func_type, L, K));
 
 fprintf('\n=== Simulation Complete ===\nPlot has been generated.\n');
