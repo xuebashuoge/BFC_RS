@@ -12,8 +12,8 @@ tic
 % We MUST choose K=2 so that max(n) = log2(2^r - 1) + r ~ 2r = m
 L = 3;
 K = 2;           % Number of symbols
-r_list_sim = 2:17;  % start from at least L <= 2^r - 1
-num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
+r_list_sim = 2:6;  % start from at least L <= 2^r - 1
+num_trials = 1; % High trials since our vectorized Monte Carlo is fast
 
 
 
@@ -27,7 +27,7 @@ num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
 % --- 2. Boolean Function Setup ---
 func_type = 'exact-threshold';
 params.beta = 2;                      % Target threshold
-params.target = randi([0 1], 1, m);   % Fallback for 'id'
+% params.target = randi([0 1], 1, m);   % Fallback for 'id'
 params.t = 3;                         % Fallback for 'bit-query'
 params.S_k = [1, 2];                  % Fallback for 'and-subset'
 params.rank = 1000;                   % Fallback for 'rank'
@@ -69,7 +69,7 @@ n_theory = linspace(sim_n_vals(1), sim_n_vals(end), 500);
 m_theory = (n_theory - log2(L)) .* K;
 % 4a. Upper Bound: S * (K - 1) / L
 % Back-calculate continuous L from n: L = 2^(n - r)
-theory_upper_bound = (sim_S_weights(1) * (K - 1)) ./ L;
+theory_upper_bound = (sim_S_weights * (K - 1)) ./ L;
 
 shannon_bound = 1 - 2.^(n_theory - m_theory);
 
@@ -80,7 +80,7 @@ figure('Name', 'BFC Error Probability', 'Color', 'w', 'Position', [100, 100, 800
 % Using semilogy for log scale on the Y-axis
 semilogy(sim_n_vals, sim_error_prob, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Simulated Empirical FP');
 hold on;
-semilogy(n_theory, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
+semilogy(sim_n_vals, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
 semilogy(n_theory, shannon_bound, 'k-.', 'LineWidth', 2, 'DisplayName', 'Shannon Limit: 1 - 2^{n-m}');
 
 % Formatting
