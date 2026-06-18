@@ -81,7 +81,7 @@ figure('Name', 'BFC Error Probability', 'Color', 'w', 'Position', [100, 100, 800
 semilogy(sim_n_vals, sim_error_prob, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Simulated Empirical FP');
 hold on;
 semilogy(n_theory, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
-
+semilogy(n_theory, shannon_bound, 'k-.', 'LineWidth', 2, 'DisplayName', 'Shannon Limit: 1 - 2^{n-m}');
 
 % Formatting
 grid on;
