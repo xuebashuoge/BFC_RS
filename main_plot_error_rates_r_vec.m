@@ -2,7 +2,7 @@
 % main_plot_BFC.m
 %
 % Plots empirical false-positive probabilities against theoretical upper 
-% bounds and Shannon framework error rates.
+% bounds error rates.
 % X-axis: n = log2(L) + r
 % Y-axis: log(error probability)
 % =========================================================================
@@ -10,13 +10,11 @@ clear; close all;
 tic
 % --- 1. Simulation Parameters ---
 % We MUST choose K=2 so that max(n) = log2(2^r - 1) + r ~ 2r = m
-r = 10;           % GF(2^r) field size
+L = 3;
 K = 2;           % Number of symbols
-m = r * K;       % Total message length in bits 
+r_list_sim = 2:14;  % start from at least L <= 2^r - 1
 num_trials = 1000000; % High trials since our vectorized Monte Carlo is fast
 
-% Specific L values to simulate (up to the RS max limit of 2^r - 1)
-L_list_sim = [4,8,16,32,64,128,256,512,1023]; 
 
 
 % 'id (Constant weight S=1)' 
@@ -35,22 +33,23 @@ params.S_k = [1, 2];                  % Fallback for 'and-subset'
 params.rank = 1000;                   % Fallback for 'rank'
 
 fprintf('=== BFC Plotting Simulation ===\n');
-fprintf('Message Length: m = %d bits (r=%d, K=%d)\n', m, r, K);
-fprintf('Total Message Space: %d\n', 2^m);
 
 % --- 3. Run Empirical Simulations ---
-sim_n_vals = zeros(1, length(L_list_sim));
-sim_error_prob = zeros(1, length(L_list_sim));
+sim_n_vals = zeros(1, length(r_list_sim));
+sim_error_prob = zeros(1, length(r_list_sim));
 
 % We need the Hamming weight 'S' for the theoretical bound.
 % It will be the same for all L, so we will extract it on the first loop.
 S_weight = 0; 
 
-for i = 1:length(L_list_sim)
-    L = L_list_sim(i);
+for i = 1:length(r_list_sim)
+    r = r_list_sim(i);
+    m = r * K;       % Total message length in bits 
     sim_n_vals(i) = log2(L) + r;
     
-    fprintf('\nSimulating L = %d (n = %.2f)...\n', L, sim_n_vals(i));
+    fprintf('Message Length: m = %d bits (r=%d, K=%d), Codeword Length: %d\n', m, r, K, L);
+    fprintf('Total Message Space: %d\n', 2^m);
+    fprintf('\nSimulating r = %d (n = %.2f)...\n', r, sim_n_vals(i));
     
     % Build decoding regions for this specific L
     [D, S_curr] = build_decoding_regions_vec(r, K, L, func_type, params);
@@ -69,17 +68,13 @@ end
 
 % --- 4. Compute Theoretical Bounds (Separated Calculation) ---
 % We calculate these smoothly over a continuous range of n
-n_theory = linspace(r, m, 500);
+n_theory = linspace(sim_n_vals(1), sim_n_vals(end), 500);
 
 % 4a. Upper Bound: S * (K - 1) / L
 % Back-calculate continuous L from n: L = 2^(n - r)
 L_theory = 2.^(n_theory - r);
 theory_upper_bound = (S_weight * (K - 1)) ./ L_theory;
 
-% 4b. Shannon Framework Error Rate: 1 - 2^{n - m}
-theory_shannon = 1 - 2.^(n_theory - m);
-% Ensure it doesn't go below 0 (which causes complex numbers in log plots)
-theory_shannon(theory_shannon < 0) = 0; 
 
 % --- 5. Plotting ---
 figure('Name', 'BFC Error Probability', 'Color', 'w', 'Position', [100, 100, 800, 600]);
@@ -88,20 +83,20 @@ figure('Name', 'BFC Error Probability', 'Color', 'w', 'Position', [100, 100, 800
 semilogy(sim_n_vals, sim_error_prob, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Simulated Empirical FP');
 hold on;
 semilogy(n_theory, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
-semilogy(n_theory, theory_shannon, 'k-.', 'LineWidth', 2, 'DisplayName', 'Shannon Framework: 1 - 2^{n-m}');
+
 
 % Formatting
 grid on;
 grid minor;
 xlabel('n = log_2(L) + r', 'FontSize', 12, 'FontWeight', 'bold');
 ylabel('Error Probability (Log Scale)', 'FontSize', 12, 'FontWeight', 'bold');
-title(sprintf('BFC Error Rate vs. n (r=%d, K=%d, %s)', r, K, func_type), 'FontSize', 14);
+title(sprintf('BFC Error Rate vs. n (L=%d, K=%d, %s)', L, K, func_type), 'FontSize', 14);
 legend('Location', 'southwest', 'FontSize', 11);
-xlim([r, m]);
+xlim([floor(sim_n_vals(1)), ceil(sim_n_vals(end))]);
 
 % Enforce limits to make the plot visually clean
 ylim([max(1e-6, min(sim_error_prob(sim_error_prob>0)) * 0.1), 10]);
-saveas(gcf, sprintf('BFC_Error_Rates_%s_r%d_K%d_vec.png', func_type, r, K));
+saveas(gcf, sprintf('BFC_Error_Rates_%s_L%d_K%d_vec.png', func_type, L, K));
 
 fprintf('\n=== Simulation Complete ===\nPlot has been generated.\n');
 toc
