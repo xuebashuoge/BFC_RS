@@ -10,9 +10,9 @@ clear; close all;
 tic
 % --- 1. Simulation Parameters ---
 % We MUST choose K=2 so that max(n) = log2(2^r - 1) + r ~ 2r = m
-L = 3;
+L = 10;
 K = 2;           % Number of symbols
-r_list_sim = 2:6;  % start from at least L <= 2^r - 1
+r_list_sim = [2];  % start from at least L <= 2^r - 1
 num_trials = 1; % High trials since our vectorized Monte Carlo is fast
 
 
