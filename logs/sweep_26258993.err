@@ -1,0 +1,2 @@
+/var/spool/slurm/job26258993/slurm_script: line 22: 246720 Killed                  matlab -nodesktop -nosplash < main_plot_error_rates_r_vec.m
+[2026-06-18T14:55:26.534] error: Detected 1 oom_kill event in StepId=26258993.batch. Some of the step tasks have been OOM Killed.
