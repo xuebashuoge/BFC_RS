@@ -15,8 +15,8 @@ K = 2;           % Number of symbols
 m = r * K;       % Total message length in bits 
 num_trials = 10; % High trials since our vectorized Monte Carlo is fast
 
-% Specific L values to simulate (up to the RS max limit of 2^r - 1)
-L_list_sim = [4,8,16,32,64,128,256,512,1023]; 
+% Specific L values to simulate (up to the RS max limit of 2^r)
+L_list_sim = [4,8,16,32,64,128,256,512,1024]; 
 
 
 % 'id (Constant weight S=1)' 
