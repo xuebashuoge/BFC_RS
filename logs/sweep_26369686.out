@@ -1,0 +1,48 @@
+MATLAB is selecting SOFTWARE rendering.
+Opening log file:  /home/yangshuo/java.log.28319
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2024 The MathWorks, Inc.
+             R2024b Update 3 (24.2.0.2806996) 64-bit (glnxa64)
+                             November 26, 2024
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> === BFC Plotting Simulation ===
+>> >> >> >> >> >> >> >> >> >> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Message Length: m = 2 bits (r=1, K=2), Codeword Length: 2
+Total Message Space: 4
+
+Simulating n = 2 bits...
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> [Warning: MATLAB has disabled some advanced graphics rendering features by
+switching to software OpenGL. For more information, click <a
+href="matlab:opengl('problems')">here</a>.] 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> 
+=== Simulation Complete ===
+Plot has been generated.
+>> Elapsed time is 20.960420 seconds.
+>> Job ID           : 26369686
+Cluster          : spartan
+User/Project     : yangshuo/punim2792
+Nodes            : 1
+Wall-clock time  : 00:01:56 / 12:00:00
+
+Displaying overall resources usage from 2026-06-22 20:13:18 to 2026-06-22 20:15:14:
+
+NODE            CPU#        TOT%   ( USR   / SYS   / WIO   / IDLE  ) 
+
+spartan-bm006 : 
+                CPU# 1    : 20.4   (  16.9 /   3.4 /  59.6 /  20.0 ) 
+
+
+Allocated CPUs            : 1    
+  CPUs with usage <25%    : 1    
+  CPUs with usage <50%    : 0    
+  CPUs with usage >50%    : 0    
+
+Memory used (RAM)         : 3.6%  [2483MB of 68720MB]
+
+--------------------------------------------
+
+Job completed successfully.

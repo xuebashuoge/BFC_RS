@@ -1,0 +1,20 @@
+{Error using gf
+Expected input x to be an array with all of the values <= 1.
+
+Error in gf (line 191)
+                        validateattributes(x,{'numeric'}, {'integer', ...
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error in rs_encode_polynomial_vec (line 30)
+    alpha = gf(2, r);
+            ^^^^^^^^
+Error in build_decoding_regions_vec (line 34)
+    valid_c_matrix = rs_encode_polynomial_vec(valid_b_matrix, r, K, L);
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+} 
+{Arrays have incompatible sizes for this operation.
+} 
+{Unrecognized function or variable 'theory_upper_bound'.
+} 
+{Error using ylim (line 37)
+Limits must be a 2-element vector of increasing numeric values.
+} 
