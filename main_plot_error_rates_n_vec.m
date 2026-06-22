@@ -11,8 +11,8 @@ tic
 % --- 1. Simulation Parameters ---
 % We MUST choose K=2 so that max(n) = log2(2^r - 1) + r ~ 2r = m
 K = 2;           % Number of symbols
-n_list_sim = 2:2:18;  % start from at least L <= 2^r - 1
-num_trials = 10000000; % High trials since our vectorized Monte Carlo is fast
+n_list_sim = 4:2:18;  % start from at least L <= 2^r - 1
+num_trials = 10; % High trials since our vectorized Monte Carlo is fast
 
 
 
@@ -68,11 +68,10 @@ end
 
 % --- 4. Compute Theoretical Bounds (Separated Calculation) ---
 % We calculate these smoothly over a continuous range of n
-n_theory = linspace(n_list_sim(1), n_list_sim(end), 500);
-L_theory = 2 .^ (n_theory ./ 2);
+
 % 4a. Upper Bound: S * (K - 1) / L
 % Back-calculate continuous L from n: L = 2^(n - r)
-theory_upper_bound = (sim_S_weights * (K - 1)) ./ L_theory;
+theory_upper_bound = (sim_S_weights * (K - 1)) ./ sim_L_vals;
 
 
 
@@ -82,7 +81,7 @@ figure('Name', 'BFC Error Probability', 'Color', 'w', 'Position', [100, 100, 800
 % Using semilogy for log scale on the Y-axis
 semilogy(n_list_sim, sim_error_prob, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Simulated Empirical FP');
 hold on;
-semilogy(n_theory, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
+semilogy(n_list_sim, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
 
 % Formatting
 grid on;
