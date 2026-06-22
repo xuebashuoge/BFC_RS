@@ -43,15 +43,23 @@ function stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials)
     % Check all trials simultaneously via lookup table
     lookup_indices = sub2ind([L, 2^r], U, received_symbols_x + 1);
     decoded_f = valid_lookup(lookup_indices);
+
+    % Add a debugging baseline that always decodes to 0 (no symbols are valid)
+    decoded_f_baseline = false(num_trials, 1);
     
     % 5. Tally Metrics (Logical Arrays)
     fp_count = sum((actual_f == 0) & (decoded_f == 1));
     fn_count = sum((actual_f == 1) & (decoded_f == 0));
-    
+    fp_count_baseline = sum((actual_f == 0) & (decoded_f_baseline == 1));
+    fn_count_baseline = sum((actual_f == 1) & (decoded_f_baseline == 0));
+
     % Calculate conditional probabilities
     fp_prob = fp_count / num_trials;
     fn_prob = fn_count / num_trials;
     error_prob = (fp_count + fn_count) / num_trials;
+    fp_prob_baseline = fp_count_baseline / num_trials;
+    fn_prob_baseline = fn_count_baseline / num_trials;
+    error_prob_baseline = (fp_count_baseline + fn_count_baseline) / num_trials;
     
-    stat = struct('fp_prob', fp_prob, 'fn_prob', fn_prob, 'error_prob', error_prob);
+    stat = struct('fp_prob', fp_prob, 'fn_prob', fn_prob, 'error_prob', error_prob, 'fp_prob_baseline', fp_prob_baseline, 'fn_prob_baseline', fn_prob_baseline, 'error_prob_baseline', error_prob_baseline);
 end

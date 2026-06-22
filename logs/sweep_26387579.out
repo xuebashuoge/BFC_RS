@@ -1,0 +1,24 @@
+MATLAB is selecting SOFTWARE rendering.
+Opening log file:  /home/yangshuo/java.log.50889
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2024 The MathWorks, Inc.
+             R2024b Update 3 (24.2.0.2806996) 64-bit (glnxa64)
+                             November 26, 2024
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> === BFC Plotting Simulation ===
+>> >> >> >> >> >> >> >> >> >> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Message Length: m = 4 bits (r=2, K=2), Codeword Length: 4
+Total Message Space: 16
+
+Simulating n = 4 bits...
+Hamming weight of boolean function (S): 6
+Empirical Error Probability: 0.500047
+Message Length: m = 6 bits (r=3, K=2), Codeword Length: 8
+Total Message Space: 64
+
+Simulating n = 6 bits...
+Hamming weight of boolean function (S): 15

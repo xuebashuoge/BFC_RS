@@ -12,7 +12,7 @@ tic
 % We MUST choose K=2 so that max(n) = log2(2^r - 1) + r ~ 2r = m
 K = 2;           % Number of symbols
 n_list_sim = 4:2:18;  % start from at least L <= 2^r - 1
-num_trials = 10; % High trials since our vectorized Monte Carlo is fast
+num_trials = 10000000; % High trials since our vectorized Monte Carlo is fast
 
 
 
@@ -37,6 +37,7 @@ fprintf('=== BFC Plotting Simulation ===\n');
 sim_r_vals = zeros(1, length(n_list_sim));
 sim_L_vals = zeros(1, length(n_list_sim));
 sim_error_prob = zeros(1, length(n_list_sim));
+sim_error_prob_baseline = zeros(1, length(n_list_sim));
 sim_S_weights = zeros(1, length(n_list_sim)); % Store S for each r (should be the same)
 
 % We need the Hamming weight 'S' for the theoretical bound.
@@ -62,8 +63,9 @@ for i = 1:length(n_list_sim)
     % Run Monte Carlo
     stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
     sim_error_prob(i) = stat.error_prob;
+    sim_error_prob_baseline(i) = stat.error_prob_baseline;
     
-    fprintf('Empirical Error Probability: %.6f\n', sim_error_prob(i));
+    fprintf('Lambda 1: %.6f, Lambda 2: %.6f, Error: %.6f\n Lambda 1b: %.6f, Lambda 2b: %.6f, Error b: %.6f\n', stat.fn_prob, stat.fp_prob, stat.error_prob, stat.fn_prob_baseline, stat.fp_prob_baseline, stat.error_prob_baseline);
 end
 
 % --- 4. Compute Theoretical Bounds (Separated Calculation) ---
@@ -81,6 +83,7 @@ figure('Name', 'BFC Error Probability', 'Color', 'w', 'Position', [100, 100, 800
 % Using semilogy for log scale on the Y-axis
 semilogy(n_list_sim, sim_error_prob, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Simulated Empirical FP');
 hold on;
+semilogy(n_list_sim, sim_error_prob_baseline, 'bx-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Baseline (always decode 0)');
 semilogy(n_list_sim, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
 
 % Formatting
