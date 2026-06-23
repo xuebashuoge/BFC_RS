@@ -51,7 +51,7 @@ for i = 1:length(r_list_sim)
     fprintf('\nSimulating r = %d (n = %.2f)...\n', r, sim_n_vals(i));
     
     % Build decoding regions for this specific L
-    [D, S_curr] = build_decoding_regions_vec(r, K, L, func_type, params);
+    [D, S_curr, D_ratio] = build_decoding_regions_vec(r, K, L, func_type, params);
     
     sim_S_weights(i) = S_curr;
     fprintf('Hamming weight of boolean function (S): %d\n', S_curr);

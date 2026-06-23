@@ -38,7 +38,8 @@ sim_r_vals = zeros(1, length(n_list_sim));
 sim_L_vals = zeros(1, length(n_list_sim));
 sim_error_prob = zeros(1, length(n_list_sim));
 sim_error_prob_baseline = zeros(1, length(n_list_sim));
-sim_S_weights = zeros(1, length(n_list_sim)); % Store S for each r (should be the same)
+sim_S_weights = zeros(1, length(n_list_sim));
+expected_FP_rates = zeros(1, length(n_list_sim));
 
 % We need the Hamming weight 'S' for the theoretical bound.
 % It will be the same for all L, so we will extract it on the first loop.
@@ -55,7 +56,10 @@ for i = 1:length(n_list_sim)
     fprintf('\nSimulating n = %d bits...\n', n);
     
     % Build decoding regions for this specific L
-    [D, S_curr] = build_decoding_regions_vec(r, K, L, func_type, params);
+    [D, S_curr, D_ratio] = build_decoding_regions_vec(r, K, L, func_type, params);
+
+    % calculate expected FP rate based on D_ratio (for debugging)
+    expected_FP_rates(i) = mean(D_ratio) - S_curr / 2^m;
     
     sim_S_weights(i) = S_curr;
     fprintf('Hamming weight of boolean function (S): %d\n', S_curr);
@@ -65,7 +69,7 @@ for i = 1:length(n_list_sim)
     sim_error_prob(i) = stat.error_prob;
     sim_error_prob_baseline(i) = stat.error_prob_baseline;
     
-    fprintf('Lambda 1: %.6f, Lambda 2: %.6f, Error: %.6f\n Lambda 1b: %.6f, Lambda 2b: %.6f, Error b: %.6f\n', stat.fn_prob, stat.fp_prob, stat.error_prob, stat.fn_prob_baseline, stat.fp_prob_baseline, stat.error_prob_baseline);
+    fprintf('Proposed FN: %.6f, FP: %.6f, Error: %.6f\n Baseline FN: %.6f, FP: %.6f, Error: %.6f\nExpected FP: %.6f\n', stat.fn_prob, stat.fp_prob, stat.error_prob, stat.fn_prob_baseline, stat.fp_prob_baseline, stat.error_prob_baseline, expected_FP_rates(i));
 end
 
 % --- 4. Compute Theoretical Bounds (Separated Calculation) ---
@@ -85,6 +89,7 @@ semilogy(n_list_sim, sim_error_prob, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'Di
 hold on;
 semilogy(n_list_sim, sim_error_prob_baseline, 'bx-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Baseline (always decode 0)');
 semilogy(n_list_sim, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
+semilogy(n_list_sim, expected_FP_rates, 'g-.', 'LineWidth', 2, 'DisplayName', 'Expected FP');
 
 % Formatting
 grid on;

@@ -53,7 +53,7 @@ for i = 1:length(L_list_sim)
     fprintf('\nSimulating L = %d (n = %.2f)...\n', L, sim_n_vals(i));
     
     % Build decoding regions for this specific L
-    [D, S_curr] = build_decoding_regions_vec(r, K, L, func_type, params);
+    [D, S_curr, D_ratio] = build_decoding_regions_vec(r, K, L, func_type, params);
     
     if i == 1
         S_weight = S_curr; % Save the Hamming weight for theoretical math

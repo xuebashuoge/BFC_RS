@@ -1,4 +1,4 @@
-function [D, S] = build_decoding_regions_vec(r, K, L, func_type, params)
+function [D, S, D_ratio] = build_decoding_regions_vec(r, K, L, func_type, params)
     % build_decoding_regions: Determines valid GF symbols at each position
     %
     % Inputs:
@@ -7,6 +7,7 @@ function [D, S] = build_decoding_regions_vec(r, K, L, func_type, params)
     % Outputs:
     %   D - Cell array of size [1 x L]. D{l} contains a GF array of symbols
     %   S - Hamming weight of the boolean function
+    %   D_ratio - Ratio of valid symbols to total symbols in each decoding region
     
     total_messages = 2^(r * K);
     
@@ -34,12 +35,12 @@ function [D, S] = build_decoding_regions_vec(r, K, L, func_type, params)
     valid_c_matrix = rs_encode_polynomial_vec(valid_b_matrix, r, K, L);
 
     % Add symbols to respective decoding regions
-    debug_list = zeros(1,L);
+    D_ratio = zeros(1,L);
     for l = 1:L
         valid_c_ints = valid_c_matrix(:, l);
         unique_ints = unique(valid_c_ints.x);
         D{l} = gf(unique_ints, r);
-        debug_list(l) = size(unique_ints, 1) / 2^r;
+        D_ratio(l) = size(unique_ints, 1) / 2^r;
     end
 
     % Give a list of each entry that

@@ -22,3 +22,39 @@ Total Message Space: 64
 
 Simulating n = 6 bits...
 Hamming weight of boolean function (S): 15
+Empirical Error Probability: 0.624998
+Message Length: m = 8 bits (r=4, K=2), Codeword Length: 16
+Total Message Space: 256
+
+Simulating n = 8 bits...
+Hamming weight of boolean function (S): 28
+Empirical Error Probability: 0.734390
+Message Length: m = 10 bits (r=5, K=2), Codeword Length: 32
+Total Message Space: 1024
+
+Simulating n = 10 bits...
+Hamming weight of boolean function (S): 45
+Empirical Error Probability: 0.742410
+Message Length: m = 12 bits (r=6, K=2), Codeword Length: 64
+Total Message Space: 4096
+
+Simulating n = 12 bits...
+Hamming weight of boolean function (S): 66
+Empirical Error Probability: 0.659658
+Message Length: m = 14 bits (r=7, K=2), Codeword Length: 128
+Total Message Space: 16384
+
+Simulating n = 14 bits...
+Hamming weight of boolean function (S): 91
+Empirical Error Probability: 0.527050
+Message Length: m = 16 bits (r=8, K=2), Codeword Length: 256
+Total Message Space: 65536
+
+Simulating n = 16 bits...
+Hamming weight of boolean function (S): 120
+Empirical Error Probability: 0.386950
+Message Length: m = 18 bits (r=9, K=2), Codeword Length: 512
+Total Message Space: 262144
+
+Simulating n = 18 bits...
+Hamming weight of boolean function (S): 153

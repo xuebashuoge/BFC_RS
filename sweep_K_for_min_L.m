@@ -8,9 +8,9 @@ clear; clc; close all;
 
 %% --- Configuration ---
 r = 4;                      % GF(2^r) parameter
-K_vec = 2:4;                % The sequence of K values to sweep over, K_max <= 2^r - 1
-target_error = 0.1;        % Hard reliability threshold (e.g., 1%)
-num_trials = 10000;         % High Monte Carlo trials to reduce variance noise
+K_vec = 2:10;                % The sequence of K values to sweep over, K_max <= 2^r - 1
+target_error = 0.2;        % Hard reliability threshold (e.g., 1%)
+num_trials = 1000000;         % High Monte Carlo trials to reduce variance noise
 
 % 'id (Constant weight S=1)' 
 % 'exact-threshold (sum == beta)'         
@@ -48,7 +48,7 @@ for i = 1:length(K_vec)
     % Build the decoding regions for the MAX possible L just once. 
     % Because the evaluation points g^u are ordered, the decoding regions 
     % for a smaller L are simply the first L elements of D_full.
-    [D_full, S] = build_decoding_regions_vec(r, K, L_max, func_type, params);
+    [D_full, S, D_ratio] = build_decoding_regions_vec(r, K, L_max, func_type, params);
     fprintf('  -> Boolean function weight S = %d\n', S);
     
     found_L = NaN; % Default to NaN if we can't meet the target
@@ -101,5 +101,7 @@ yticks(0:2:L_max);
 text_str = sprintf('Function: %s', func_type);
 annotation('textbox', [0.15, 0.8, 0.3, 0.1], 'String', text_str, ...
     'FitBoxToText', 'on', 'BackgroundColor', 'w', 'EdgeColor', 'k');
+
+saveas(gcf, sprintf('sweep_K_for_min_L_%s_r%d.png', func_type, r));
 
 fprintf('Sweep complete. Plot generated.\n');
