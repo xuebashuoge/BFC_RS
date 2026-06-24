@@ -19,4 +19,4 @@ module load MATLAB/2024b_Update_3
 
 export SCRATCH="/tmp/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
 mkdir -p $SCRATCH
-matlab -nodesktop -nosplash < main_plot_error_rates_vec.m
+matlab -nodesktop -nosplash < main_plot_error_rates_L_vec.m

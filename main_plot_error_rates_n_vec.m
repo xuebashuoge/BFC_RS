@@ -62,11 +62,12 @@ for i = 1:length(n_list_sim)
     % calculate expected FP rate based on D_ratio (for debugging)
     expected_FP_rates(i) = mean(D_ratio) - S_curr / 2^m;
     
+    sim_rates(i) = rate_calculation(n, m, func_type);
+    fprintf('Rate: %.6f\n', sim_rates(i));
+    
     sim_S_weights(i) = S_curr;
     fprintf('Hamming weight of boolean function (S): %d\n', S_curr);
 
-    sim_rates(i) = rate_calculation(n, m, func_type);
-    fprintf('Rate: %.6f\n', sim_rates(i));
 
     % Run Monte Carlo
     stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
@@ -101,9 +102,10 @@ for i = 1:length(n_list_sim)
     if sim_error_prob(i) > 0
         % Offset X slightly to the right (+0.2)
         % Multiply Y by 1.3 to push it visually "up" on the log scale
-        text(n_list_sim(i) + 0.2, sim_error_prob(i) * 1.3, ...
-            sprintf('R=%.3f', sim_rates(i)), ...
-            'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+        if i == length(n_list_sim) % For the last point, offset to the left instead to avoid going out of bounds
+            text(n_list_sim(i) - 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+        else
+            text(n_list_sim(i) + 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
     end
 end
 

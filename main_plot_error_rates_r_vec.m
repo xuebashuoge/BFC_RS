@@ -37,7 +37,10 @@ fprintf('=== BFC Plotting Simulation ===\n');
 % --- 3. Run Empirical Simulations ---
 sim_n_vals = zeros(1, length(r_list_sim));
 sim_error_prob = zeros(1, length(r_list_sim));
-sim_S_weights = zeros(1, length(r_list_sim)); % Store S for each r (should be the same)
+sim_S_weights = zeros(1, length(r_list_sim));
+sim_rates = zeros(1, length(r_list_sim));
+expected_FP_rates = zeros(1, length(r_list_sim));
+sim_error_prob_baseline = zeros(1, length(r_list_sim));
 
 % We need the Hamming weight 'S' for the theoretical bound.
 % It will be the same for all L, so we will extract it on the first loop.
@@ -52,6 +55,12 @@ for i = 1:length(r_list_sim)
     
     % Build decoding regions for this specific L
     [D, S_curr, D_ratio] = build_decoding_regions_vec(r, K, L, func_type, params);
+
+    % calculate expected FP rate based on D_ratio (for debugging)
+    expected_FP_rates(i) = mean(D_ratio) - S_curr / 2^m;
+    
+    sim_rates(i) = rate_calculation(n, m, func_type);
+    fprintf('Rate: %.6f\n', sim_rates(i));
     
     sim_S_weights(i) = S_curr;
     fprintf('Hamming weight of boolean function (S): %d\n', S_curr);
@@ -59,8 +68,9 @@ for i = 1:length(r_list_sim)
     % Run Monte Carlo
     stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
     sim_error_prob(i) = stat.error_prob;
+    sim_error_prob_baseline(i) = stat.error_prob_baseline;
     
-    fprintf('Empirical Error Probability: %.6f\n', sim_error_prob(i));
+    fprintf('Proposed FN: %.6f, FP: %.6f, Error: %.6f\n Baseline FN: %.6f, FP: %.6f, Error: %.6f\nExpected FP: %.6f\n', stat.fn_prob, stat.fp_prob, stat.error_prob, stat.fn_prob_baseline, stat.fp_prob_baseline, stat.error_prob_baseline, expected_FP_rates(i));
 end
 
 % --- 4. Compute Theoretical Bounds (Separated Calculation) ---
@@ -82,6 +92,20 @@ semilogy(sim_n_vals, sim_error_prob, 'bo-', 'LineWidth', 2, 'MarkerSize', 8, 'Di
 hold on;
 semilogy(sim_n_vals, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
 semilogy(n_theory, shannon_bound, 'k-.', 'LineWidth', 2, 'DisplayName', 'Shannon Limit: 1 - 2^{n-m}');
+semilogy(sim_n_vals, sim_error_prob_baseline, 'gx-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Baseline Empirical FP');
+semilogy(sim_n_vals, expected_FP_rates, 'm:', 'LineWidth', 2, 'DisplayName', 'Expected FP');
+
+for i = 1:length(sim_n_vals)
+    % Only add text if the error probability > 0 (log(0) is undefined and won't plot properly)
+    if sim_error_prob(i) > 0
+        % Offset X slightly to the right (+0.2)
+        % Multiply Y by 1.3 to push it visually "up" on the log scale
+        if i == length(sim_n_vals) % For the last point, offset to the left instead to avoid going out of bounds
+            text(sim_n_vals(i) - 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+        else
+            text(sim_n_vals(i) + 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+    end
+end
 
 % Formatting
 grid on;
