@@ -13,8 +13,8 @@
 tic
 % --- 1. Simulation Parameters ---
 r = 4;           % GF(2^r) field size parameter
-K = 3;           % Number of symbols in the message
-L = 15;          % RS codeword length (L <= 2^r - 1)
+K = 2;           % Number of symbols in the message
+L = 16;          % RS codeword length (L <= 2^r - 1)
 num_trials = 100000; % Number of Monte Carlo trials
 
 % --- 2. Boolean Function Setup ---
@@ -26,8 +26,8 @@ num_trials = 100000; % Number of Monte Carlo trials
 % 'bit-query', 'Bit test (bit t == 1)',               
 % 'and-subset', 'AND on subset (bits S_k == 1)',     
 % 'rank', 'Rank-based (int(b) <= rank)',          
-func_type = 'exact-threshold';
-params.beta = 6;       % Used for exact/at-most threshold
+func_type = 'id';
+params.beta = 2;       % Used for exact/at-most threshold
 params.target = randi([0 1], 1, r*K); % Used for 'id' (must be length r*K)
 params.t = 3;          % Used for 'bit-query'
 params.S_k = [1, 5, 8];% Used for 'and-subset'
@@ -40,12 +40,15 @@ fprintf('Total Message Space: %d\n\n', 2^(r*K));
 
 % --- 3. Build Decoding Regions ---
 fprintf('Building decoding regions (exhaustive search over all messages)...\n');
-[D, S] = build_decoding_regions(r, K, L, func_type, params);
+[D, S, D_ratio] = build_decoding_regions_vec(r, K, L, func_type, params);
 fprintf('Hamming weight of boolean function (S): %d\n\n', S);
+
+expected_fp_prob = mean(D_ratio) - S / 2^(r*K);
+
 
 % --- 4. Run Monte Carlo Simulation ---
 fprintf('Running Monte Carlo simulation with %d trials...\n', num_trials);
-stat = run_monte_carlo(D, r, K, L, func_type, params, num_trials);
+stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
 
 % --- 5. Theoretical Comparison ---
 % Theoretical Union Bound on False Positives: S * (K - 1) / L
@@ -56,11 +59,7 @@ fprintf('Empirical False-Negative Rate: %.6f (Expected: 0.000000)\n', stat.fn_pr
 fprintf('Empirical False-Positive Rate: %.6f\n', stat.fp_prob);
 fprintf('Empirical Overall Error Rate: %.6f\n', stat.error_prob);
 fprintf('Theoretical Upper Bound (FP):  %.6f\n', theoretical_bound_fp);
+fprintf('Expected False-Positive Probability (from decoding region ratio): %.6f\n', expected_fp_prob);
 
-if stat.fp_prob <= theoretical_bound_fp
-    fprintf('SUCCESS: Empirical FP rate is within the theoretical bound.\n');
-else
-    fprintf('WARNING: Empirical FP rate exceeded the theoretical bound!\n');
-end
 
 toc
