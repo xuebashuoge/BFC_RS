@@ -39,6 +39,7 @@ sim_L_vals = zeros(1, length(n_list_sim));
 sim_error_prob = zeros(1, length(n_list_sim));
 sim_error_prob_baseline = zeros(1, length(n_list_sim));
 sim_S_weights = zeros(1, length(n_list_sim));
+sim_rates = zeros(1, length(n_list_sim));
 expected_FP_rates = zeros(1, length(n_list_sim));
 
 % We need the Hamming weight 'S' for the theoretical bound.
@@ -64,8 +65,8 @@ for i = 1:length(n_list_sim)
     sim_S_weights(i) = S_curr;
     fprintf('Hamming weight of boolean function (S): %d\n', S_curr);
 
-    rate = rate_calculation(n, m, func_type, rate);
-    fprintf('Rate: %.6f\n', rate);
+    sim_rates(i) = rate_calculation(n, m, func_type);
+    fprintf('Rate: %.6f\n', sim_rates(i));
 
     % Run Monte Carlo
     stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
@@ -102,7 +103,7 @@ for i = 1:length(n_list_sim)
         % Multiply Y by 1.3 to push it visually "up" on the log scale
         text(n_list_sim(i) + 0.2, sim_error_prob(i) * 1.3, ...
             sprintf('R=%.3f', sim_rates(i)), ...
-            'Color', 'b', 'FontSize', 9, 'FontWeight', 'bold');
+            'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
     end
 end
 
