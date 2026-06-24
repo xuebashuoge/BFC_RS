@@ -103,9 +103,12 @@ for i = 1:length(n_list_sim)
         % Offset X slightly to the right (+0.2)
         % Multiply Y by 1.3 to push it visually "up" on the log scale
         if i == length(n_list_sim) % For the last point, offset to the left instead to avoid going out of bounds
-            text(n_list_sim(i) - 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
-        else
+            text(n_list_sim(i) - 0.5, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+        elseif i == 1
             text(n_list_sim(i) + 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+        else
+            text(n_list_sim(i) - 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+        end
     end
 end
 
