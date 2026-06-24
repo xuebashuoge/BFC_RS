@@ -12,7 +12,7 @@ tic
 % We MUST choose K=2 so that max(n) = log2(2^r - 1) + r ~ 2r = m
 L = 10;
 K = 4;           % Number of symbols
-r_list_sim = 2:17;  % start from at least L <= 2^r - 1
+r_list_sim = 2:18;  % start from at least L <= 2^r - 1
 num_trials = 10000000; % High trials since our vectorized Monte Carlo is fast
 
 
@@ -59,7 +59,7 @@ for i = 1:length(r_list_sim)
     % calculate expected FP rate based on D_ratio (for debugging)
     expected_FP_rates(i) = mean(D_ratio) - S_curr / 2^m;
     
-    sim_rates(i) = rate_calculation(n, m, func_type);
+    sim_rates(i) = rate_calculation(sim_n_vals(i), m, func_type);
     fprintf('Rate: %.6f\n', sim_rates(i));
     
     sim_S_weights(i) = S_curr;
@@ -100,10 +100,7 @@ for i = 1:length(sim_n_vals)
     if sim_error_prob(i) > 0
         % Offset X slightly to the right (+0.2)
         % Multiply Y by 1.3 to push it visually "up" on the log scale
-        if i == length(sim_n_vals) % For the last point, offset to the left instead to avoid going out of bounds
-            text(sim_n_vals(i) - 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
-        else
-            text(sim_n_vals(i) + 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+        text(sim_n_vals(i) - 0.2, sim_error_prob(i) * 0.8, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
     end
 end
 
@@ -113,11 +110,11 @@ grid minor;
 xlabel('n = log_2(L) + r', 'FontSize', 12, 'FontWeight', 'bold');
 ylabel('Error Probability (Log Scale)', 'FontSize', 12, 'FontWeight', 'bold');
 title(sprintf('BFC Error Rate vs. n (L=%d, K=%d, %s)', L, K, func_type), 'FontSize', 14);
-legend('Location', 'southwest', 'FontSize', 11);
+legend('Location', 'southeast', 'FontSize', 11);
 xlim([floor(sim_n_vals(1)), ceil(sim_n_vals(end))]);
 
 % Enforce limits to make the plot visually clean
-ylim([max(1e-6, min(sim_error_prob(sim_error_prob>0)) * 0.1), 1]);
+ylim([max(1e-6, min(sim_error_prob(sim_error_prob>0)) * 0.1), 1.1]);
 saveas(gcf, sprintf('BFC_Error_Rates_%s_L%d_K%d_vec.png', func_type, L, K));
 
 fprintf('\n=== Simulation Complete ===\nPlot has been generated.\n');

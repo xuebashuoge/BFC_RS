@@ -16,7 +16,7 @@ m = r * K;       % Total message length in bits
 num_trials = 10000000; % High trials since our vectorized Monte Carlo is fast
 
 % Specific L values to simulate (up to the RS max limit of 2^r)
-L_list_sim = [4,8,16,32,64,128,256,512,1024]; 
+L_list_sim = 2.^(2:r); 
 
 
 % 'id (Constant weight S=1)' 
@@ -61,9 +61,9 @@ for i = 1:length(L_list_sim)
     D_ratio = D_ratio_all(1:L);
 
     % calculate expected FP rate based on D_ratio (for debugging)
-    expected_FP_rates(i) = mean(D_ratio) - S_curr / 2^m;
+    expected_FP_rates(i) = mean(D_ratio) - S_weight / 2^m;
     
-    sim_rates(i) = rate_calculation(n, m, func_type);
+    sim_rates(i) = rate_calculation(sim_n_vals(i), m, func_type);
     fprintf('Rate: %.6f\n', sim_rates(i));
     
     
@@ -105,10 +105,8 @@ for i = 1:length(sim_n_vals)
     if sim_error_prob(i) > 0
         % Offset X slightly to the right (+0.2)
         % Multiply Y by 1.3 to push it visually "up" on the log scale
-        if i == length(sim_n_vals) % For the last point, offset to the left instead to avoid going out of bounds
-            text(sim_n_vals(i) - 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
-        else
-            text(sim_n_vals(i) + 0.2, sim_error_prob(i) * 1.3, sprintf('R=%.3f', sim_rates(i)), 'Color', 'b', 'FontSize', 12, 'FontWeight', 'bold');
+        text(sim_n_vals(i)-0.2, sim_error_prob(i) * 1.5, sprintf('R=%.2f', sim_rates(i)), 'Color', 'b', 'FontSize', 8, 'FontWeight', 'bold');
+
     end
 end
 
