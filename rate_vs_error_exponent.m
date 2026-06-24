@@ -22,12 +22,12 @@ params.S_k = [1, 2];                  % Fallback for 'and-subset'
 params.rank = 1000;                   % Fallback for 'rank'
 
 %% 2. Define the Search Space
-max_r = 8;          % Max GF parameter 2^r
-max_K = 12;         % Max symbols K
+max_r = 4;          % Max GF parameter 2^r
+max_K = 3;         % Max symbols K
 max_m = 24;         % SAFETY CAP: m = r*K. Limits memory per worker to ~3GB.
                     % With 64 workers, 3GB * 64 = 192GB RAM used. 
                     % Do not exceed 26 on a 1024GB machine.
-num_trials = 1e8;   % Number of Monte Carlo trials per configuration
+num_trials = 1e3;   % Number of Monte Carlo trials per configuration
 
 % Build a list of valid (r, K, L) configurations
 configs = [];
@@ -122,16 +122,17 @@ end
 
 
 xlabel('Rate', 'FontSize', 12, 'FontWeight', 'bold');
-ylabel('Error Exponent E_2 = -(1/n) \log_2(\lambda_2)', 'FontSize', 12, 'FontWeight', 'bold');
+ylabel('Error Exponent E_2 = -log_2(\lambda_2)/n', 'FontSize', 12, 'FontWeight', 'bold');
 title(sprintf('BFC Performance Space: Rate vs E_2\nFunction: %s', func_type), 'Interpreter', 'none', 'FontSize', 14);
 legend('Location', 'best');
 set(gca, 'FontSize', 11);
 hold off;
+saveas(gcf, sprintf('Rate_vs_Error_Exponent_%s.png', func_type));
 
 %% Local Helper Function
 function [pareto_R, pareto_E] = extract_pareto_front(R, E)
     % Sort by Rate (descending), then by E (descending)
-    [sorted_vals, sort_idx] = sortrows([R, E], [-1, -2]);
+    [sorted_vals, ] = sortrows([R, E], [-1, -2]);
     R_sorted = sorted_vals(:, 1);
     E_sorted = sorted_vals(:, 2);
     
