@@ -22,12 +22,12 @@ params.S_k = [1, 2];                  % Fallback for 'and-subset'
 params.rank = 1000;                   % Fallback for 'rank'
 
 %% 2. Define the Search Space
-max_r = 4;          % Max GF parameter 2^r
-max_K = 3;         % Max symbols K
+max_r = 8;          % Max GF parameter 2^r
+max_K = 12;         % Max symbols K
 max_m = 24;         % SAFETY CAP: m = r*K. Limits memory per worker to ~3GB.
                     % With 64 workers, 3GB * 64 = 192GB RAM used. 
                     % Do not exceed 26 on a 1024GB machine.
-num_trials = 1e3;   % Number of Monte Carlo trials per configuration
+num_trials = 1e8;   % Number of Monte Carlo trials per configuration
 
 % Build a list of valid (r, K, L) configurations
 configs = [];

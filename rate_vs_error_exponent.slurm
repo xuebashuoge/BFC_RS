@@ -5,18 +5,22 @@
 #=========================================================
 
 # Name of the job
-#SBATCH --job-name=BFC_RS
+#SBATCH --job-name=rate_vs_error_exponent
 
 # Output log files (%j will be replaced by the SLURM job ID)
 #SBATCH --output=logs/sweep_%j.out
 #SBATCH --error=logs/sweep_%j.err
 
-#SBATCH --cpus-per-task=4
-#SBATCH --time=01:00:00
+#SBATCH --cpus-per-task=64
+#SBATCH --time=24:00:00
 #SBATCH --mem=1024G
 
 module load MATLAB/2024b_Update_3
 
 export SCRATCH="/tmp/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
 mkdir -p $SCRATCH
-matlab -nodesktop -nosplash < plot_error_vs_n.m
+matlab -nodesktop -nosplash < rate_vs_error_exponent.m
+
+my-job-stats -a -n -s
+
+echo "Job completed successfully."
