@@ -39,11 +39,6 @@ for i = 1:length(K_vec)
     K = K_vec(i);
     fprintf('Evaluating K = %d...\n', K);
     
-    % Memory safety warning check (2^{r*K} starts getting very large)
-    if (r * K) > 22
-        warning('r*K = %d. The vectorized matrix might exceed RAM limits!', r*K);
-    end
-    
     % OPTIMIZATION: 
     % Build the decoding regions for the MAX possible L just once. 
     % Because the evaluation points g^u are ordered, the decoding regions 

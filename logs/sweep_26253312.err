@@ -1,9 +1,0 @@
-{Unrecognized function or variable 'm'.
-} 
-{Requested 4294967296x32 (1024.0GB) array exceeds maximum array size preference
-(1006.9GB). This might cause MATLAB to become unresponsive.
-
-Error in build_decoding_regions_vec (line 24)
-    b_matrix = rem(floor(msg_ints ./ weights_b), 2);
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-} 
