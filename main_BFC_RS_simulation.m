@@ -13,7 +13,7 @@
 tic
 % --- 1. Simulation Parameters ---
 r = 4;           % GF(2^r) field size parameter
-K = 2;           % Number of symbols in the message
+K = 4;           % Number of symbols in the message
 L = 16;          % RS codeword length (L <= 2^r - 1)
 num_trials = 100000; % Number of Monte Carlo trials
 
