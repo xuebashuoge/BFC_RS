@@ -11,9 +11,9 @@
 #SBATCH --output=logs/sweep_%j.out
 #SBATCH --error=logs/sweep_%j.err
 
-#SBATCH --cpus-per-task=4
-#SBATCH --time=12:00:00
-#SBATCH --mem=16G
+#SBATCH --cpus-per-task=1
+#SBATCH --time=24:00:00
+#SBATCH --mem=256G
 
 module load MATLAB/2024b_Update_3
 
