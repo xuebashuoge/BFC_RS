@@ -64,6 +64,9 @@ for i = 1:length(n_list_sim)
     sim_S_weights(i) = S_curr;
     fprintf('Hamming weight of boolean function (S): %d\n', S_curr);
 
+    rate = rate_calculation(n, m, func_type, rate);
+    fprintf('Rate: %.6f\n', rate);
+
     % Run Monte Carlo
     stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
     sim_error_prob(i) = stat.error_prob;
@@ -90,6 +93,18 @@ hold on;
 semilogy(n_list_sim, sim_error_prob_baseline, 'bx-', 'LineWidth', 2, 'MarkerSize', 8, 'DisplayName', 'Baseline (always decode 0)');
 semilogy(n_list_sim, theory_upper_bound, 'r--', 'LineWidth', 2, 'DisplayName', 'Upper Bound: S(K-1)/L');
 semilogy(n_list_sim, expected_FP_rates, 'g-.', 'LineWidth', 2, 'DisplayName', 'Expected FP');
+
+% --- ADDED: Loop to add text annotations for the rates ---
+for i = 1:length(n_list_sim)
+    % Only add text if the error probability > 0 (log(0) is undefined and won't plot properly)
+    if sim_error_prob(i) > 0
+        % Offset X slightly to the right (+0.2)
+        % Multiply Y by 1.3 to push it visually "up" on the log scale
+        text(n_list_sim(i) + 0.2, sim_error_prob(i) * 1.3, ...
+            sprintf('R=%.3f', sim_rates(i)), ...
+            'Color', 'b', 'FontSize', 9, 'FontWeight', 'bold');
+    end
+end
 
 % Formatting
 grid on;
