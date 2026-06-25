@@ -13,7 +13,6 @@ tic
 L = 10;
 K = 2;           % Number of symbols
 r_list_sim = 4:12;  % start from at least L <= 2^r
-num_trials = 10 * 2 .^ (K*r_list_sim); % High trials since our vectorized Monte Carlo is fast
 
 
 
@@ -48,6 +47,8 @@ for i = 1:length(r_list_sim)
     r = r_list_sim(i);
     m = r * K;       % Total message length in bits 
     sim_n_vals(i) = log2(L) + r;
+
+    num_trials = max(1e6, 10 * 2^m); % Adjust trials based on message space size
     
     fprintf('Message Length: m = %d bits (r=%d, K=%d), Codeword Length: %d\n', m, r, K, L);
     fprintf('Total Message Space: %d\n', 2^m);

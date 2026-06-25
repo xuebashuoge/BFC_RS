@@ -71,7 +71,7 @@ parfor i = 1:num_configs
     n = log2(L) + r;
     m = r * K;
 
-    num_trials = 10 * 2^m; % Adjust trials based on message space size
+    num_trials = max(1e6, 10 * 2^m); % Adjust trials based on message space size
     
     % 1. Build Decoding Regions & get pre-image size S
     [D, S, ~] = build_decoding_regions_vec(r, K, L, func_type, params);
