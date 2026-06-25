@@ -12,7 +12,6 @@ tic
 % We MUST choose K=2 so that max(n) = log2(2^r - 1) + r ~ 2r = m
 K = 2;           % Number of symbols
 n_list_sim = 4:2:18;  % start from at least L <= 2^r - 1
-num_trials = 10000000; % High trials since our vectorized Monte Carlo is fast
 
 
 
@@ -51,6 +50,8 @@ for i = 1:length(n_list_sim)
     L = 2^r;
     sim_L_vals(i) = L;
     m = sim_r_vals(i) * K;       % Total message length in bits 
+
+    num_trials = 10 * 2^m;
     
     fprintf('Message Length: m = %d bits (r=%d, K=%d), Codeword Length: %d\n', m, r, K, L);
     fprintf('Total Message Space: %d\n', 2^m);

@@ -27,7 +27,6 @@ max_K = 12;         % Max symbols K
 max_m = 24;         % SAFETY CAP: m = r*K. Limits memory per worker to ~3GB.
                     % With 64 workers, 3GB * 64 = 192GB RAM used. 
                     % Do not exceed 26 on a 1024GB machine.
-num_trials = 1e8;   % Number of Monte Carlo trials per configuration
 
 % Build a list of valid (r, K, L) configurations
 configs = [];
@@ -71,6 +70,8 @@ parfor i = 1:num_configs
     
     n = log2(L) + r;
     m = r * K;
+
+    num_trials = 10 * 2^m; % Adjust trials based on message space size
     
     % 1. Build Decoding Regions & get pre-image size S
     [D, S, ~] = build_decoding_regions_vec(r, K, L, func_type, params);

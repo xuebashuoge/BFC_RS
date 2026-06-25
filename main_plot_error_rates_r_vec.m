@@ -13,7 +13,7 @@ tic
 L = 10;
 K = 2;           % Number of symbols
 r_list_sim = 4:12;  % start from at least L <= 2^r
-num_trials = 100000000; % High trials since our vectorized Monte Carlo is fast
+num_trials = 10 * 2 .^ (K*r_list_sim); % High trials since our vectorized Monte Carlo is fast
 
 
 
@@ -66,7 +66,7 @@ for i = 1:length(r_list_sim)
     fprintf('Hamming weight of boolean function (S): %d\n', S_curr);
 
     % Run Monte Carlo
-    stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
+    stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials(i));
     sim_error_prob(i) = stat.error_prob;
     sim_error_prob_baseline(i) = stat.error_prob_baseline;
     
