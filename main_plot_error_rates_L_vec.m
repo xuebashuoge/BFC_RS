@@ -13,10 +13,11 @@ tic
 r = 6;           % GF(2^r) field size
 K = 4;           % Number of symbols
 m = r * K;       % Total message length in bits 
-num_trials = max(1e6, 10 * 2^m); % High trials since our vectorized Monte Carlo is fast
+% num_trials = max(1e6, 10 * 2^m); % High trials since our vectorized Monte Carlo is fast
+num_trials = 1e5; % Adjusted number of trials
 
 % Specific L values to simulate (up to the RS max limit of 2^r)
-L_list_sim = 2.^(2:r); 
+L_list_sim = (K+1):(2^r); % L must be strictly greater than K
 
 
 % 'id (Constant weight S=1)' 
