@@ -14,12 +14,12 @@ clear; clc; close all;
 % 'and-subset (bits in S_k == 1)'    
 % 'rank (int(b) <= rank)'         
 
-func_type = 'exact-threshold';
+func_type = 'rank';
 params.beta = 2;                      % Target threshold
 % params.target = randi([0 1], 1, m);   % Fallback for 'id'
 params.t = 3;                         % Fallback for 'bit-query'
 params.S_k = [1, 2];                  % Fallback for 'and-subset'
-params.rank = 1000;                   % Fallback for 'rank'
+params.rank = 100;                   % Fallback for 'rank'
 
 %% 2. Define the Search Space
 max_r = 8;          % Max GF parameter 2^r
