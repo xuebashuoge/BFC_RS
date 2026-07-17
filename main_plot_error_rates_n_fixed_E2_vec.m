@@ -50,7 +50,7 @@ for i = 1:length(n_list_sim)
     sim_r_vals(i) = r;
     L = 2^r;
     sim_L_vals(i) = L;
-    K = 2^(n*(0.5-E2));
+    K = floor(2^(n*(0.5-E2)));
     sim_K_vals(i) = K;
     m = r*K;       % Total message length in bits 
 
