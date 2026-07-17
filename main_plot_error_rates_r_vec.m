@@ -48,7 +48,7 @@ for i = 1:length(r_list_sim)
     m = r * K;       % Total message length in bits 
     sim_n_vals(i) = log2(L) + r;
 
-    num_trials = max(1e6, 10 * 2^m); % Adjust trials based on message space size
+    num_trials = min(1e7, max(1e6, 10 * 2^m)); % Adjust trials based on message space size
     
     fprintf('Message Length: m = %d bits (r=%d, K=%d), Codeword Length: %d\n', m, r, K, L);
     fprintf('Total Message Space: %d\n', 2^m);
@@ -67,7 +67,7 @@ for i = 1:length(r_list_sim)
     fprintf('Hamming weight of boolean function (S): %d\n', S_curr);
 
     % Run Monte Carlo
-    stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials(i));
+    stat = run_monte_carlo_vec(D, r, K, L, func_type, params, num_trials);
     sim_error_prob(i) = stat.error_prob;
     sim_error_prob_baseline(i) = stat.error_prob_baseline;
     

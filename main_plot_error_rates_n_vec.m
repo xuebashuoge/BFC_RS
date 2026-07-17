@@ -51,7 +51,7 @@ for i = 1:length(n_list_sim)
     sim_L_vals(i) = L;
     m = sim_r_vals(i) * K;       % Total message length in bits 
 
-    num_trials = max(1e6, 10 * 2^m);
+    num_trials = min(1e7, max(1e6, 10 * 2^m));
     
     fprintf('Message Length: m = %d bits (r=%d, K=%d), Codeword Length: %d\n', m, r, K, L);
     fprintf('Total Message Space: %d\n', 2^m);
